@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+
+# IDE
+.workbuddy/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Pipeline caches & temp
+pipline/official_draws_cache.json
+pipline/prizes_raw_cache.json
+pipline/scratch/
+pipline/marksix_history_*.json
+pipline/marksix_history_*.csv
+
+# Data source (private/proprietary)
+1976-2026_all_records.xlsx
+
+# Node (if any)
+node_modules/

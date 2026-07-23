@@ -1,0 +1,149 @@
+name: 每日自動更新六合彩資料
+
+on:
+  schedule:
+    # 每日 23:00 HKT = 15:00 UTC
+    - cron: "0 15 * * *"
+  # 允許手動觸發（方便測試）
+  workflow_dispatch:
+
+# 確保同一時間只有一個 workflow 在執行（避免並發衝突）
+concurrency:
+  group: daily-update
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # 推送 commit
+  issues: write     # 建立 issue（錯誤通知用）
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # ---------------------------------------------------------------
+      # Step 1: 簽出倉庫
+      # ---------------------------------------------------------------
+      - name: 簽出倉庫
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # 完整歷史（git push 需要）
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ---------------------------------------------------------------
+      # Step 2: 設定 Python 環境
+      # ---------------------------------------------------------------
+      - name: 設定 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: 安裝依賴
+        run: pip install -r requirements.txt
+
+      # ---------------------------------------------------------------
+      # Step 3: 執行資料更新腳本
+      # ---------------------------------------------------------------
+      - name: 執行每日更新
+        id: update
+        run: python pipline/daily_update.py
+        env:
+          TZ: Asia/Hong_Kong
+
+      # ---------------------------------------------------------------
+      # Step 4: 檢查變更並自動提交
+      # ---------------------------------------------------------------
+      - name: 檢查檔案變更
+        id: diff
+        run: |
+          git diff --name-only
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "沒有檔案變更，跳過 commit"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "偵測到檔案變更，準備 commit"
+          fi
+
+      - name: 提交並推送變更
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/draw_results_verified.json data/data.js
+          git commit -m "📊 自動更新六合彩開獎資料 — $(date '+%Y-%m-%d %H:%M HKT')"
+          git push
+        env:
+          TZ: Asia/Hong_Kong
+
+      # ---------------------------------------------------------------
+      # Step 5: 摘要輸出
+      # ---------------------------------------------------------------
+      - name: 執行摘要
+        if: always()
+        run: |
+          echo "--- 執行摘要 ---"
+          echo "觸發方式: ${{ github.event_name }}"
+          echo "執行時間: $(date '+%Y-%m-%d %H:%M:%S HKT')"
+          echo "排程 cron: 0 15 * * * (UTC) = 每日 23:00 HKT"
+          echo "資料變更: ${{ steps.diff.outputs.changed || 'N/A' }}"
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "狀態: ✓ 成功"
+          else
+            echo "狀態: ✗ 失敗"
+          fi
+        env:
+          TZ: Asia/Hong_Kong
+
+      # ---------------------------------------------------------------
+      # Step 6: 失敗通知 — 自動建立 GitHub Issue
+      # ---------------------------------------------------------------
+      - name: 建立失敗通知 Issue
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: ['auto-update-failure'],
+            });
+
+            // 避免重複建立相同 issue
+            if (issues.length > 0) {
+              console.log(`已有 ${issues.length} 個開啟中的失敗通知，跳過建立`);
+              return;
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `⚠️ 六合彩資料自動更新失敗 — ${new Date().toISOString().slice(0, 10)}`,
+              body: [
+                '## 自動更新失敗',
+                '',
+                `- **失敗時間**: ${new Date().toLocaleString('zh-HK', { timeZone: 'Asia/Hong_Kong' })} HKT`,
+                `- **觸發方式**: ${context.eventName}`,
+                `- **Workflow Run**: [查看執行紀錄](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
+                '',
+                '### 可能原因',
+                '',
+                '1. HKJC 官方 GraphQL API (`info.cld.hkjc.com/graphql/base/`) 暫時無法連線',
+                '2. GraphQL persisted query sha256 hash 已過期（HKJC 更新了 schema）',
+                '3. GitHub Actions runner 網路問題',
+                '',
+                '### 處理方式',
+                '',
+                '1. 手動觸發 workflow: Actions → "每日自動更新六合彩資料" → Run workflow',
+                '2. 若持續失敗，檢查 `pipline/marksix_query.graphql` 是否需要更新',
+                '3. 手動在本機執行 `python pipline/daily_update.py` 測試',
+                '',
+                '---',
+                '*此 Issue 由 GitHub Actions 自動建立*',
+              ].join('\n'),
+              labels: ['auto-update-failure'],
+            });
+            console.log('已建立失敗通知 Issue');

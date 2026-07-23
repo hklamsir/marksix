@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>香港六合彩資訊網 | Mark Six Information</title>
+  <meta name="description" content="香港六合彩開獎結果、歷史記錄、統計分析、中獎比對、投注計算機 — 一站式六合彩資訊平台">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <div class="logo-icon">₆</div>
+        <div>
+          <h1>香港六合彩資訊網</h1>
+          <div class="subtitle">Mark Six Information Platform</div>
+        </div>
+      </div>
+      <div class="header-update" id="headerUpdate">載入中...</div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="nav" id="mainNav">
+    <button class="nav-toggle" id="navToggle" aria-label="開啟導覽選單" aria-expanded="false">
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </button>
+    <div class="nav-inner" id="navInner">
+      <button class="nav-tab active" data-module="latest">
+        <span class="nav-icon">🎯</span>最新結果
+      </button>
+      <button class="nav-tab" data-module="history">
+        <span class="nav-icon">📋</span>歷史記錄
+      </button>
+      <button class="nav-tab" data-module="guide">
+        <span class="nav-icon">📖</span>玩法指南
+      </button>
+      <button class="nav-tab" data-module="checker">
+        <span class="nav-icon">🔍</span>中獎比對
+      </button>
+      <button class="nav-tab" data-module="calculator">
+        <span class="nav-icon">🧮</span>投注計算
+      </button>
+      <button class="nav-tab" data-module="stats">
+        <span class="nav-icon">📊</span>統計分析
+      </button>
+      <button class="nav-tab" data-module="filter">
+        <span class="nav-icon">🎲</span>號碼篩選
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- ===== Module 1: 最新攪珠結果 ===== -->
+    <section class="module active" id="module-latest">
+      <div class="loading" id="latestLoading">載入最新開獎結果...</div>
+      <div id="latestContent" style="display:none;">
+        <!-- 最新開獎卡片 -->
+        <div class="card latest-draw-card" id="latestDrawCard"></div>
+        <!-- 派彩詳情 -->
+        <div class="card" id="prizeDetailCard"></div>
+      </div>
+    </section>
+
+    <!-- ===== Module 2: 歷史開獎記錄 ===== -->
+    <section class="module" id="module-history">
+      <div class="section-title"><span class="icon">📋</span>歷史開獎記錄</div>
+      <div class="section-desc">瀏覽所有歷史六合彩開獎結果，支援按日期、期數搜尋及排序</div>
+      <div class="card">
+        <div class="history-controls">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="historySearch" placeholder="搜尋期數（如 26/077）或日期（如 2026-07-16）...">
+          </div>
+          <select id="historyYearFilter" class="form-group select" style="width:auto;min-width:120px;">
+            <option value="">全部年份</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="history-table" id="historyTable">
+            <thead>
+              <tr>
+                <th data-sort="draw_no">期數 <span class="sort-icon">↕</span></th>
+                <th data-sort="date">日期 <span class="sort-icon">↕</span></th>
+                <th>號碼</th>
+                <th data-sort="special_number">特別號碼 <span class="sort-icon">↕</span></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="historyPagination"></div>
+      </div>
+    </section>
+
+    <!-- ===== Module 3: 玩法指南 ===== -->
+    <section class="module" id="module-guide">
+      <div class="section-title"><span class="icon">📖</span>六合彩玩法指南</div>
+      <div class="section-desc">了解六合彩各種投注玩法、中獎規則及派彩機制</div>
+
+      <div class="guide-section">
+        <h3>基本玩法</h3>
+        <div class="guide-grid">
+          <div class="guide-card">
+            <h4>🎯 單式注項</h4>
+            <p>從 1 至 49 號碼中選取 <strong>6 個號碼</strong>作為一注。每注金額為 <strong>HK$10</strong>。這是最基本的投注方式，最適合初學者。</p>
+          </div>
+          <div class="guide-card">
+            <h4>🔢 複式注項</h4>
+            <p>從 1 至 49 號碼中選取 <strong>7 個或以上</strong>號碼。系統會自動將所選號碼組合成所有可能的 6 個號碼組合。選取 n 個號碼，組合數為 <strong>C(n,6)</strong> 注。</p>
+          </div>
+          <div class="guide-card">
+            <h4>🎯 膽拖注項</h4>
+            <p>選取 <strong>1 至 5 個號碼作為「膽」</strong>（必須出現的號碼），再選取其他號碼作為「腳」。系統自動將膽與腳組合成所有 6 個號碼的組合。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-section">
+        <h3>中獎規則與派彩</h3>
+        <p style="margin-bottom:12px;color:var(--text-secondary);">每期攪珠從 49 個號碼中攪出 <strong>7 個號碼</strong>：6 個正選號碼 + 1 個特別號碼。對中指定數量號碼即可獲獎。</p>
+        <div style="overflow-x:auto;">
+          <table class="prize-rules-table">
+            <thead>
+              <tr>
+                <th>獎項</th>
+                <th>中獎條件</th>
+                <th>派彩方式</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>頭獎</strong></td>
+                <td>選中 6 個正選號碼</td>
+                <td>獎金基金之 45%，每注最少 HK$800 萬</td>
+              </tr>
+              <tr>
+                <td><strong>二獎</strong></td>
+                <td>選中 5 個正選號碼 + 特別號碼</td>
+                <td>獎金基金之 15%</td>
+              </tr>
+              <tr>
+                <td><strong>三獎</strong></td>
+                <td>選中 5 個正選號碼</td>
+                <td>獎金基金之 40%</td>
+              </tr>
+              <tr>
+                <td><strong>四獎</strong></td>
+                <td>選中 4 個正選號碼 + 特別號碼</td>
+                <td>固定 HK$9,600</td>
+              </tr>
+              <tr>
+                <td><strong>五獎</strong></td>
+                <td>選中 4 個正選號碼</td>
+                <td>固定 HK$640</td>
+              </tr>
+              <tr>
+                <td><strong>六獎</strong></td>
+                <td>選中 3 個正選號碼 + 特別號碼</td>
+                <td>固定 HK$320</td>
+              </tr>
+              <tr>
+                <td><strong>七獎</strong></td>
+                <td>選中 3 個正選號碼</td>
+                <td>固定 HK$40</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="guide-section">
+        <h3>特別攪珠</h3>
+        <div class="guide-grid">
+          <div class="guide-card">
+            <h4>🌟 金多寶</h4>
+            <p>在特定節日（如中秋、新春、復活節）舉行的特別攪珠，設有巨額金多寶獎金，頭獎金額可高達數千萬元。</p>
+          </div>
+          <div class="guide-card">
+            <h4>❄️ 雪球獎金</h4>
+            <p>若當期頭獎無人中獎，頭獎獎金會累積至下一期，形成「雪球獎金」，直至有人中獎為止。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Module 4: 獎金計算（中獎比對） ===== -->
+    <section class="module" id="module-checker">
+      <div class="section-title"><span class="icon">🔍</span>中獎比對</div>
+      <div class="section-desc">輸入你的投注號碼，與最新開獎結果比對，即時判斷中獎等級與獎金</div>
+      <div class="checker-container">
+        <div class="checker-input-section">
+          <h3 style="margin-bottom:12px;font-size:1rem;">請選擇你的投注號碼</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:12px;">
+            選擇 <strong>6 個正選號碼</strong>，系統自動偵測特別號碼並納入獎級計算
+          </p>
+          <div class="number-grid" id="checkerGrid"></div>
+          <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:8px;">
+            已選號碼：
+          </div>
+          <div class="selected-numbers" id="checkerSelected"></div>
+          <div class="checker-actions">
+            <button class="btn btn-primary" id="btnCheck">🔍 比對中獎</button>
+            <button class="btn btn-secondary" id="btnClearCheck">✕ 清除重選</button>
+          </div>
+        </div>
+        <div class="checker-result-section" id="checkerResult">
+          <div class="result-none">請先選擇號碼，然後點擊「比對中獎」</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Module 5: 投注金額計算機 ===== -->
+    <section class="module" id="module-calculator">
+      <div class="section-title"><span class="icon">🧮</span>投注金額計算機</div>
+      <div class="section-desc">根據投注方式及選擇號碼數量，自動計算所需投注金額</div>
+      <div class="calc-container">
+        <div class="calc-form-section">
+          <h3 style="margin-bottom:16px;font-size:1rem;">選擇投注方式</h3>
+          <div class="bet-type-selector" id="betTypeSelector">
+            <button class="bet-type-btn active" data-type="single">單式</button>
+            <button class="bet-type-btn" data-type="multiple">複式</button>
+            <button class="bet-type-btn" data-type="banker">膽拖</button>
+          </div>
+          <!-- 複式：選項由 js/app.js 的 initCalculator() 動態產生（7-49 個號碼） -->
+          <div class="form-group" id="multipleGroup">
+            <label>選擇號碼總數</label>
+            <select id="multipleCount"></select>
+          </div>
+          <!-- 膽拖：膽固定 1-5，腳的範圍由 js/app.js 依膽數動態產生 -->
+          <div class="form-group" id="bankerGroup" style="display:none;">
+            <label>膽（必須中的號碼數量，1-5個）</label>
+            <select id="bankerCount">
+              <option value="1">1 膽</option>
+              <option value="2">2 膽</option>
+              <option value="3">3 膽</option>
+              <option value="4">4 膽</option>
+              <option value="5">5 膽</option>
+            </select>
+          </div>
+          <div class="form-group" id="legGroup" style="display:none;">
+            <label>腳（配對號碼數量）</label>
+            <select id="legCount"></select>
+          </div>
+          <button class="btn btn-primary btn-block" id="btnCalculate">🧮 計算金額</button>
+        </div>
+        <div class="calc-result-section" id="calcResult">
+          <div class="result-none">請選擇投注方式及號碼數量，點擊計算</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Module 6: 統計分析 ===== -->
+    <section class="module" id="module-stats">
+      <div class="section-title"><span class="icon">📊</span>統計分析</div>
+      <div class="section-desc">號碼頻率、奇偶分布、總和趨勢、連號模式等圖表化統計資訊</div>
+      <div class="loading" id="statsLoading">計算統計數據中...</div>
+      <div id="statsContent" style="display:none;">
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="chart-title">📈 號碼出現頻率（49號碼時代）</div>
+            <canvas id="chartFrequency"></canvas>
+          </div>
+          <div class="stats-card">
+            <div class="chart-title">🥧 奇偶號碼比例分布</div>
+            <canvas id="chartOddEven"></canvas>
+          </div>
+          <div class="stats-card">
+            <div class="chart-title">📊 號碼總和範圍分布</div>
+            <canvas id="chartSumRange"></canvas>
+          </div>
+          <div class="stats-card">
+            <div class="chart-title">🎯 大小號碼比例（≤24 vs >24）</div>
+            <canvas id="chartBigSmall"></canvas>
+          </div>
+          <div class="stats-card">
+            <div class="chart-title">🔗 連號分布（每期連續號碼對數）</div>
+            <canvas id="chartConsecutive"></canvas>
+          </div>
+        </div>
+
+        <!-- 熱門連號排行榜 -->
+        <div class="card mt-24">
+          <div class="card-title">🔥 熱門連號排行榜</div>
+          <div class="section-desc" style="margin-top:0;">統計所有開獎記錄中出現最頻繁的連續號碼組合（如 11-12、28-29）</div>
+          <div style="overflow-x:auto;">
+            <table class="freq-table" id="consecutiveTable">
+              <thead>
+                <tr>
+                  <th>排名</th><th>連號組合</th><th>出現次數</th><th>頻率</th><th>出現占比</th>
+                </tr>
+              </thead>
+              <tbody id="consecutiveBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Module 7: 號碼篩選 ===== -->
+    <section class="module" id="module-filter">
+      <div class="section-title"><span class="icon">🎲</span>號碼篩選工具</div>
+      <div class="section-desc">設定條件（排除號碼、奇偶比例、大小比例、總和範圍等），自動隨機抽樣篩選出符合條件的號碼組合</div>
+      <div class="filter-container">
+        <div class="filter-sidebar">
+          <h3 style="margin-bottom:16px;font-size:1rem;">篩選條件</h3>
+
+          <div class="filter-group">
+            <div class="filter-group-title">🚫 排除號碼</div>
+            <div class="exclude-grid" id="excludeGrid"></div>
+            <button class="btn btn-secondary btn-sm mt-8" id="btnClearExclude">清除全部</button>
+          </div>
+
+          <div class="filter-group">
+            <div class="filter-group-title">🔢 奇偶號碼分布（勾選要保留的比例）</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;">
+              <label class="filter-check-label"><input type="checkbox" id="oe0" checked> 0偶6奇</label>
+              <label class="filter-check-label"><input type="checkbox" id="oe1" checked> 1偶5奇</label>
+              <label class="filter-check-label"><input type="checkbox" id="oe2" checked> 2偶4奇</label>
+              <label class="filter-check-label"><input type="checkbox" id="oe3" checked> 3偶3奇</label>
+              <label class="filter-check-label"><input type="checkbox" id="oe4" checked> 4偶2奇</label>
+              <label class="filter-check-label"><input type="checkbox" id="oe5" checked> 5偶1奇</label>
+              <label class="filter-check-label"><input type="checkbox" id="oe6" checked> 6偶0奇</label>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <div class="filter-group-title">🔥 熱門連號選擇</div>
+            <select id="hotConsecutiveSelect" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;">
+              <option value="">不限</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <div class="filter-group-title">📏 大小號碼數量（≤24為小）</div>
+            <div class="range-labels">
+              <span>小號最少</span><span id="smallRangeLabel">2</span>
+            </div>
+            <input type="range" class="range-slider" id="smallRange" min="0" max="6" value="2">
+            <div class="range-labels"><span>0</span><span>3</span><span>6</span></div>
+          </div>
+
+          <div class="filter-group">
+            <div class="filter-group-title">➕ 號碼總和範圍</div>
+            <div class="range-input-group">
+              <input type="number" id="sumMin" value="100" min="21" max="279">
+              <span>至</span>
+              <input type="number" id="sumMax" value="200" min="21" max="279">
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <div class="filter-group-title">📈 號碼出現頻率（至少出現 N 次）</div>
+            <div class="range-labels">
+              <span>至少出現</span><span id="minFreqLabel">150</span><span>次</span>
+            </div>
+            <input type="range" class="range-slider" id="minFreqRange" min="150" max="600" value="150">
+            <div class="range-labels"><span>150</span><span>375</span><span>600</span></div>
+          </div>
+
+          <div class="filter-group">
+            <div class="filter-group-title">⏱️ 相隔期數（勾選要保留的範圍）</div>
+            <div style="margin-top:8px;">
+              <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">最近常開</div>
+              <div style="display:flex;flex-wrap:wrap;gap:4px 12px;">
+                <label class="filter-check-label"><input type="checkbox" id="gapRecent10"> 近 10 期</label>
+                <label class="filter-check-label"><input type="checkbox" id="gapRecent15"> 近 15 期</label>
+                <label class="filter-check-label"><input type="checkbox" id="gapRecent20"> 近 20 期</label>
+              </div>
+            </div>
+            <div style="margin-top:8px;">
+              <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">很久沒開</div>
+              <div style="display:flex;flex-wrap:wrap;gap:4px 12px;">
+                <label class="filter-check-label"><input type="checkbox" id="gapCold30"> 超過 30 期</label>
+                <label class="filter-check-label"><input type="checkbox" id="gapCold40"> 超過 40 期</label>
+                <label class="filter-check-label"><input type="checkbox" id="gapCold50"> 超過 50 期以上</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <div class="filter-group-title">🔗 排除連續號碼</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:8px;">
+              <label class="filter-check-label"><input type="checkbox" id="excludeConsec4"> 排除 4 連號</label>
+              <label class="filter-check-label"><input type="checkbox" id="excludeConsec3"> 排除 3 連號</label>
+              <label class="filter-check-label"><input type="checkbox" id="excludeConsec2"> 排除 2 連號</label>
+              <label class="filter-check-label"><input type="checkbox" id="excludeConsec1"> 排除 1 連號</label>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-block" id="btnFilter">🔍 開始篩選</button>
+        </div>
+        <div class="filter-results" id="filterResults">
+          <div class="empty-state">
+            <div class="empty-icon">🎲</div>
+            <div>設定篩選條件後，點擊「開始篩選」查看結果</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>香港六合彩資訊網 — 資料來源：<a href="https://bet.hkjc.com/marksix/" target="_blank" rel="noopener">香港賽馬會</a></p>
+    <p style="margin-top:6px;font-size:0.75rem;">本網站僅供資訊參考，不構成任何投注建議。最新及準確資料請以香港賽馬會官方公布為準。</p>
+  </footer>
+
+  <!-- 內嵌資料集 (auto-generated; 雙擊 HTML 即可離線瀏覽,免開 HTTP server) -->
+  <script src="data/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

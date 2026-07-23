@@ -1,0 +1,36 @@
+query marksixResult($lastNDraw: Int, $startDate: String, $endDate: String, $drawType: LotteryDrawType) {
+    lotteryDraws(lastNDraw: $lastNDraw, startDate: $startDate, endDate: $endDate, drawType: $drawType) {
+      ...lotteryDrawsFragment
+    }
+}
+
+fragment lotteryDrawsFragment on LotteryDraw {
+    id
+    year
+    no
+    openDate
+    closeDate
+    drawDate
+    status
+    snowballCode
+    snowballName_en
+    snowballName_ch
+    lotteryPool {
+      sell
+      status
+      totalInvestment
+      jackpot
+      unitBet
+      estimatedPrize
+      derivedFirstPrizeDiv
+      lotteryPrizes {
+        type
+        winningUnit
+        dividend
+      }
+    }
+    drawResult {
+      drawnNo
+      xDrawnNo
+    }
+  }
