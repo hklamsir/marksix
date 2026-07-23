@@ -294,8 +294,8 @@ def merge_draws(existing: dict, new_draws: list[dict]) -> tuple[list[dict], int]
         else:
             existing_map[dn] = d
             new_count += 1
-    # 按 draw_no 排序（YY/NNN 字串排序即為時間順序）
-    merged = sorted(existing_map.values(), key=lambda x: x["draw_no"])
+    # 按 draw_no 降序（最新在前），YY/NNN 字串排序即為時間順序
+    merged = sorted(existing_map.values(), key=lambda x: x["draw_no"], reverse=True)
     return merged, new_count
 
 

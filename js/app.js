@@ -158,9 +158,10 @@ function finalizeDataLoad() {
   }
   Store.allData = merged;
 
-  // Latest draw
+  // Latest draw — 找出 draw_no 最大的一期（與陣列排序方向無關）
   if (Store.draws.length > 0) {
-    Store.latestDraw = Store.draws[0];
+    Store.latestDraw = Store.draws.reduce((latest, d) =>
+      (!latest || d.draw_no > latest.draw_no) ? d : latest, null);
   }
 
   Store.dataLoaded = true;
