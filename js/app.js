@@ -16,13 +16,16 @@ const Store = {
 // ==================== Utilities ====================
 
 /** Get ball color class by number */
+/** HKJC 官方號碼球配色(2026 官方 fun facts 確認): 紅17/藍16/綠16 */
+const HKJC_RED_BALLS   = new Set([1, 2, 7, 8, 12, 13, 18, 19, 23, 24, 29, 30, 34, 35, 40, 45, 46]);
+const HKJC_BLUE_BALLS  = new Set([3, 4, 9, 10, 14, 15, 20, 25, 26, 31, 36, 37, 41, 42, 47, 48]);
+const HKJC_GREEN_BALLS = new Set([5, 6, 11, 16, 17, 21, 22, 27, 28, 32, 33, 38, 39, 43, 44, 49]);
+
 function getBallColor(num) {
-  if (num >= 1 && num <= 10) return 'ball-red';
-  if (num >= 11 && num <= 20) return 'ball-blue';
-  if (num >= 21 && num <= 30) return 'ball-green';
-  if (num >= 31 && num <= 40) return 'ball-orange';
-  if (num >= 41 && num <= 49) return 'ball-purple';
-  return 'ball-red';
+  if (HKJC_RED_BALLS.has(num))   return 'ball-red';
+  if (HKJC_BLUE_BALLS.has(num))  return 'ball-blue';
+  if (HKJC_GREEN_BALLS.has(num)) return 'ball-green';
+  return 'ball-red'; // fallback (不應觸發)
 }
 
 /** Render a number ball */
@@ -624,21 +627,17 @@ function initChecker() {
 }
 
 function getBallColorGroup(num) {
-  if (num >= 1 && num <= 10) return 'red';
-  if (num >= 11 && num <= 20) return 'blue';
-  if (num >= 21 && num <= 30) return 'green';
-  if (num >= 31 && num <= 40) return 'orange';
-  if (num >= 41 && num <= 49) return 'purple';
+  if (HKJC_RED_BALLS.has(num))   return 'red';
+  if (HKJC_BLUE_BALLS.has(num))  return 'blue';
+  if (HKJC_GREEN_BALLS.has(num)) return 'green';
   return 'red';
 }
 
 /** 取得號碼球對應的顏色值 (用於 Chart.js 等需要 CSS 色碼的場景) */
 function getBallFgColor(num) {
-  if (num >= 1 && num <= 10) return '#d32f2f';
-  if (num >= 11 && num <= 20) return '#1565c0';
-  if (num >= 21 && num <= 30) return '#2e7d32';
-  if (num >= 31 && num <= 40) return '#e65100';
-  if (num >= 41 && num <= 49) return '#7b1fa2';
+  if (HKJC_RED_BALLS.has(num))   return '#d32f2f';
+  if (HKJC_BLUE_BALLS.has(num))  return '#1565c0';
+  if (HKJC_GREEN_BALLS.has(num)) return '#2e7d32';
   return '#d32f2f';
 }
 

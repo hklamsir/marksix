@@ -542,6 +542,12 @@ a:hover {
   border-bottom: 1px solid var(--border-light);
 }
 
+/* 號碼欄位(第 3、4 欄)保持橫向排列 — 防止球號在窄螢幕上垂直堆疊 */
+.history-table td:nth-child(3),
+.history-table td:nth-child(4) {
+  white-space: nowrap;
+}
+
 .history-table th {
   background: var(--primary);
   color: #fff;
