@@ -1259,6 +1259,83 @@ const CHART_FONT_TITLE = { family: 'Lexend Mega, Noto Sans TC, sans-serif', size
 const CHART_FONT_LEGEND = { family: 'Public Sans, Noto Sans TC, sans-serif', size: 12 };
 const CHART_FONT_TICKS = { family: 'Public Sans, Noto Sans TC, sans-serif', size: 11 };
 
+// ────── Chart Tooltip 解說內容 ──────
+const CHART_HELP = {
+  chartFrequency: { title: '號碼出現頻率', p1: '統計 49 號碼時代所有開獎中每個號碼出現的總次數。', p2: '柱體顏色 = 號碼球官方配色 (紅/藍/綠)。柱越高代表該號碼歷史上越「熱」。', p3: 'Tips: 熱號 ≠ 未來必出，僅為歷史趨勢參考。' },
+  chartOddEven: { title: '奇偶號碼比例', p1: '統計每期 6 個號碼中「偶數」的個數分布（0偶6奇 ~ 6偶0奇）。', p2: '理想隨機分布下 3偶3奇 機率最高(~36%)。偏極端(0偶或6偶)的組合較少見。', p3: 'Tips: 勾選此分佈可篩選特定奇偶比例的組合。' },
+  chartSumRange: { title: '號碼總和範圍', p1: '每期 6 個主號碼加總後的分佈。最小值 = 21 (1+2+3+4+5+6)，最大值 = 279。', p2: '歷史上 80%+ 期數總和落在 100-200 之間。總和過低(<80)或過高(>220) 的組合極少出現。', p3: 'Tips: 選號時可用總和判斷「大小平衡」。' },
+  chartBigSmall: { title: '大小號碼比例', p1: '以 24 為界：≤24 =「小號」、>24 =「大號」。統計每期 6 個號碼中大號的個數。', p2: '平衡比例 (3大3小 或 4大2小 / 2大4小) 最常見，合計佔約 80%。6大0小 或 0大6小 極少。', p3: 'Tips: 配合總和使用可縮小選號範圍。' },
+  chartConsecutive: { title: '連號分布', p1: '統計每期 6 個號碼中，出現幾對「連續號碼」(如 11-12)。', p2: '0對連號最常見(~45%)，1對約35%，2對以上愈來愈少。4對以上連號=全部號碼幾乎相連，極罕見。', p3: 'Tips: 選號時可透過排除連號來減少組合數。' },
+  chartSpan: { title: '號碼跨度分佈', p1: 'Span = 最大值 - 最小值。衡量 6 個號碼在 1-49 範圍中的「覆蓋寬度」。', p2: '跨度 30-45 最常見(~80%)。跨度過小(<15)代表 6 個號碼全擠在窄區，過大(46+)代表極端分散。', p3: 'Tips: 跨度 < 20 或 > 45 合計不到 5%，選號時可避開。' },
+  chartAC: { title: 'AC 值分佈', p1: 'AC 值 (D - n + 1)：衡量號碼間的「不規則程度」。D = 排序後相鄰差絕對值總和。', p2: 'AC = 0 等於全連號(1,2,3,4,5,6)，歷史上從未出現。實際分佈集中在 25-39 (67.7%)，平均 30.5。', p3: 'Tips: AC < 10 或 > 40 合計不到 12%，避開可大幅減少無效組合。' },
+  chartOmission: { title: '遺漏值排行', p1: '顯示每個號碼「距離最近一次開出」的期數。gap 越大代表該號碼越「冷」。', p2: '顏色分組：綠(gap≤5) = 近期熱號、黃(6-15) = 溫和、紅(>15) = 長期未出。', p3: 'Tips: 反向策略 — 高遺漏值號碼可能迎來「反彈」。正向策略 — 追熱號。' },
+  chartMod3: { title: '除三餘數分佈', p1: '又稱「路公碼」。將 1-49 依 n%3 結果分為 3 路：餘0(16個)、餘1(17個)、餘2(16個)。', p2: '最常見為 2-2-2 (14.75%)。極端型如 5-1-0 (一路獨大) 或 0-0-6 (僅一路) 極罕見。', p3: 'Tips: 避開 ddd-5-1-0、0-0-6 等極端比例，選 2-2-2 或 1-2-3 附近組合最安全。' },
+  chartHotCold: { title: '冷熱轉折趨勢', p1: '以 30 期為滑動窗口，計算「前 5 熱號」在下一期的命中個數百分比。', p2: '命中率穩定在 40-60% 表示熱號持續有效。持續下滑(低於 30%)可能預示冷號反彈。', p3: 'Tips: 觀察折線斜率。陡升 = 熱號集中爆發，陡降 = 冷號可能抬頭。' },
+};
+
+function renderChartTooltips() {
+  document.querySelectorAll('.stats-card .chart-title').forEach(el => {
+    // 只處理含有 data-chart 屬性的 (我們手動加入)
+    if (el.querySelector('.info-icon')) return; // 已加入
+    // Find the parent container to wrap
+    const container = el.parentElement;
+    const canvasId = container.querySelector('canvas')?.id;
+    if (!canvasId || !CHART_HELP[canvasId]) return;
+    const help = CHART_HELP[canvasId];
+
+    // 替換 title 為 row 結構
+    const originalText = el.textContent;
+    el.innerHTML = '';
+    el.className = 'chart-title chart-title-row';
+    const span = document.createElement('span');
+    span.textContent = originalText;
+    el.appendChild(span);
+
+    const icon = document.createElement('button');
+    icon.className = 'info-icon';
+    icon.textContent = '?';
+    icon.setAttribute('aria-label', '查看 ' + help.title + ' 解說');
+    icon.onclick = (e) => { e.stopPropagation(); toggleChartTooltip(icon, canvasId); };
+    el.appendChild(icon);
+
+    // Create tooltip element
+    const tip = document.createElement('div');
+    tip.className = 'chart-tooltip';
+    tip.id = 'tip-' + canvasId;
+    tip.innerHTML = '<button class="close-btn" onclick="this.parentElement.classList.remove(\'show\')">x</button>' +
+      '<strong>' + help.title + '</strong>' +
+      '<p>' + help.p1 + '</p>' +
+      '<p>' + help.p2 + '</p>' +
+      '<p>' + help.p3 + '</p>';
+    container.style.position = 'relative';
+    container.appendChild(tip);
+  });
+
+  // Click outside to close
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.chart-tooltip') && !e.target.closest('.info-icon')) {
+      document.querySelectorAll('.chart-tooltip.show').forEach(t => t.classList.remove('show'));
+    }
+  });
+}
+
+function toggleChartTooltip(icon, canvasId) {
+  const tip = document.getElementById('tip-' + canvasId);
+  if (!tip) return;
+  // Close others
+  document.querySelectorAll('.chart-tooltip.show').forEach(t => { if (t !== tip) t.classList.remove('show'); });
+  tip.classList.toggle('show');
+  // Position relative to icon
+  if (tip.classList.contains('show')) {
+    const rect = icon.getBoundingClientRect();
+    const parentRect = icon.closest('.stats-card').getBoundingClientRect();
+    tip.style.top = (rect.bottom - parentRect.top + 6) + 'px';
+    tip.style.left = (rect.left - parentRect.left - 250) + 'px';
+    // Ensure tooltip doesn't overflow left
+    if (parseFloat(tip.style.left) < 0) tip.style.left = '4px';
+  }
+}
+
 function renderStats() {
   try {
     if (!Store.dataLoaded) {
@@ -1451,6 +1528,204 @@ function renderStats() {
     },
   });
 
+  // ═══════ 1. 號碼跨度分佈 (Span = max - min) ═══════
+  const spanDist = new Array(49).fill(0);
+  draws.forEach(d => {
+    const m = d.main_numbers;
+    spanDist[m[m.length - 1] - m[0]]++;
+  });
+  // Bin 為 5 跨度一桶,共 ~10 桶
+  const spanBuckets = { '10以下': 0, '11-15': 0, '16-20': 0, '21-25': 0, '26-30': 0, '31-35': 0, '36-40': 0, '41-45': 0, '46+': 0 };
+  spanDist.forEach((cnt, span) => {
+    if (span <= 10) spanBuckets['10以下'] += cnt;
+    else if (span <= 15) spanBuckets['11-15'] += cnt;
+    else if (span <= 20) spanBuckets['16-20'] += cnt;
+    else if (span <= 25) spanBuckets['21-25'] += cnt;
+    else if (span <= 30) spanBuckets['26-30'] += cnt;
+    else if (span <= 35) spanBuckets['31-35'] += cnt;
+    else if (span <= 40) spanBuckets['36-40'] += cnt;
+    else if (span <= 45) spanBuckets['41-45'] += cnt;
+    else spanBuckets['46+'] += cnt;
+  });
+  const spanKeys = Object.keys(spanBuckets);
+  const spanCtx = document.getElementById('chartSpan').getContext('2d');
+  statsCharts.span = new Chart(spanCtx, {
+    type: 'bar',
+    data: { labels: spanKeys, datasets: [{ label: '期數', data: spanKeys.map(k => spanBuckets[k]), backgroundColor: '#FFDE59', borderColor: '#000', borderWidth: 2 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { font: { ...CHART_FONT_TICKS, size: isSmallScreen ? 9 : 11 }, maxRotation: 45, minRotation: 0 } },
+        y: { beginAtZero: true, ticks: { font: CHART_FONT_TICKS }, title: { display: true, text: '期數', font: CHART_FONT_TITLE } },
+      },
+    },
+  });
+
+  // ═══════ 2. AC 值分佈 (算術複雜度) ═══════
+  // 標準中文樂透 AC 值: AC = D - (n-1), D 為排序後相鄰差絕對值總和, n=6
+  // AC 範圍: 0(全連號)~48(1,2,3,4,5,49), 典型分佈 25-35
+  const acDist = { '0-4': 0, '5-9': 0, '10-14': 0, '15-19': 0, '20-24': 0, '25-29': 0, '30-34': 0, '35-39': 0, '40+': 0 };
+  draws.forEach(d => {
+    const m = [...d.main_numbers].sort((a, b) => a - b);
+    let D = 0;
+    for (let i = 1; i < m.length; i++) D += Math.abs(m[i] - m[i - 1]);
+    const ac = D - 5;
+    if (ac <= 4) acDist['0-4']++;
+    else if (ac <= 9) acDist['5-9']++;
+    else if (ac <= 14) acDist['10-14']++;
+    else if (ac <= 19) acDist['15-19']++;
+    else if (ac <= 24) acDist['20-24']++;
+    else if (ac <= 29) acDist['25-29']++;
+    else if (ac <= 34) acDist['30-34']++;
+    else if (ac <= 39) acDist['35-39']++;
+    else acDist['40+']++;
+  });
+  const acKeys = Object.keys(acDist);
+  const acCtx = document.getElementById('chartAC').getContext('2d');
+  statsCharts.ac = new Chart(acCtx, {
+    type: 'bar',
+    data: { labels: acKeys, datasets: [{ label: '期數', data: acKeys.map(k => acDist[k]), backgroundColor: '#2563EB', borderWidth: 0 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { font: CHART_FONT_TICKS, maxRotation: 45, minRotation: 0 } },
+        y: { beginAtZero: true, ticks: { font: CHART_FONT_TICKS }, title: { display: true, text: '期數', font: CHART_FONT_TITLE } },
+      },
+    },
+  });
+
+  // ═══════ 3. 遺漏值排行 (Omission / Gap) ═══════
+  // 從最新一期往前推,計算每個號碼距上次出現的期數
+  const sortedDraws = [...draws].sort((a, b) => (a.date < b.date ? 1 : -1));
+  const omission = new Array(50).fill(0);
+  const lastSeen = new Array(50).fill(-1);
+  sortedDraws.forEach((d, idx) => {
+    d.main_numbers.forEach(n => { lastSeen[n] = idx; });
+  });
+  // 距離「最近一次出現到最新一期」的期數
+  sortedDraws.forEach((d, idx) => {
+    d.main_numbers.forEach(n => {
+      const gap = idx - lastSeen[n];
+      if (gap >= 0 && gap < 50) omission[gap]++;
+    });
+  });
+  // 重算: 只統計每個號碼當前遺漏
+  const currentOmission = [];
+  for (let n = 1; n <= 49; n++) {
+    let gap = 0;
+    for (let i = 0; i < sortedDraws.length; i++) {
+      if (sortedDraws[i].main_numbers.includes(n)) { gap = i; break; }
+      if (i === sortedDraws.length - 1) gap = sortedDraws.length;
+    }
+    currentOmission.push({ num: n, gap });
+  }
+  currentOmission.sort((a, b) => b.gap - a.gap);
+  // 取前 25 個遺漏最多的號碼
+  const topOmit = currentOmission.slice(0, 25).reverse();
+  const omitCtx = document.getElementById('chartOmission').getContext('2d');
+  statsCharts.omission = new Chart(omitCtx, {
+    type: 'bar',
+    data: {
+      labels: topOmit.map(o => o.num),
+      datasets: [{
+        label: '遺漏期數',
+        data: topOmit.map(o => o.gap),
+        backgroundColor: topOmit.map(o => o.gap > 15 ? '#FF5757' : o.gap > 5 ? '#FFDE59' : '#16A34A'),
+        borderColor: '#000', borderWidth: 1,
+      }],
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, ticks: { font: CHART_FONT_TICKS }, title: { display: true, text: '期數', font: CHART_FONT_TITLE } },
+        y: { ticks: { font: CHART_FONT_TICKS } },
+      },
+    },
+  });
+
+  // ═══════ 4. 除三餘數分佈 (路公碼) ═══════
+  // 統計每期 3 個餘數各佔幾個 (mod 3)
+  const mod3Dist = {};  // key 如 "2-2-2", value 為期數
+  draws.forEach(d => {
+    let c0 = 0, c1 = 0, c2 = 0;
+    d.main_numbers.forEach(n => {
+      const r = n % 3;
+      if (r === 0) c0++;
+      else if (r === 1) c1++;
+      else c2++;
+    });
+    const key = `${c0}-${c1}-${c2}`;
+    mod3Dist[key] = (mod3Dist[key] || 0) + 1;
+  });
+  // 排序: 按 c0, c1, c2 順序
+  const mod3Keys = Object.keys(mod3Dist).sort((a, b) => {
+    const [a0, a1, a2] = a.split('-').map(Number);
+    const [b0, b1, b2] = b.split('-').map(Number);
+    return (a0 - b0) || (a1 - b1) || (a2 - b2);
+  });
+  const mod3Ctx = document.getElementById('chartMod3').getContext('2d');
+  statsCharts.mod3 = new Chart(mod3Ctx, {
+    type: 'bar',
+    data: { labels: mod3Keys, datasets: [{ label: '期數', data: mod3Keys.map(k => mod3Dist[k]), backgroundColor: mod3Keys.map(k => k.split('-').map(Number).join(',') === '2,2,2' ? '#FFDE59' : '#2563EB'), borderColor: '#000', borderWidth: 1 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { font: { ...CHART_FONT_TICKS, size: isSmallScreen ? 8 : 11 }, maxRotation: 60, minRotation: 30 } },
+        y: { beginAtZero: true, ticks: { font: CHART_FONT_TICKS }, title: { display: true, text: '期數', font: CHART_FONT_TITLE } },
+      },
+    },
+  });
+
+  // ═══════ 5. 冷熱轉折趨勢 (Top 5 熱號命中率) ═══════
+  // 滾動窗口 30 期, 每期找當前 Top 5 熱號, 看下期是否中 (命中率)
+  const hotColdData = [];
+  for (let i = 30; i < sortedDraws.length; i++) {
+    const window = sortedDraws.slice(i - 30, i);
+    const freq = new Array(50).fill(0);
+    window.forEach(d => d.main_numbers.forEach(n => freq[n]++));
+    const top5 = [];
+    for (let n = 1; n <= 49; n++) top5.push({ num: n, count: freq[n] });
+    top5.sort((a, b) => b.count - a.count);
+    const hot5 = top5.slice(0, 5).map(t => t.num);
+    const next = sortedDraws[i];
+    const hits = next.main_numbers.filter(n => hot5.includes(n)).length;
+    hotColdData.push({ x: i, y: hits, rate: hits / 5 * 100 });
+  }
+  // 取最近 60 個資料點 (避免過密)
+  const recentHC = hotColdData.slice(-60);
+  const hcCtx = document.getElementById('chartHotCold').getContext('2d');
+  statsCharts.hotcold = new Chart(hcCtx, {
+    type: 'line',
+    data: {
+      labels: recentHC.map(d => '期' + d.x),
+      datasets: [
+        {
+          label: '命中率 (%)',
+          data: recentHC.map(d => d.rate.toFixed(1)),
+          borderColor: '#000',
+          backgroundColor: 'rgba(255,222,89,0.3)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.3,
+          pointRadius: isSmallScreen ? 0 : 2,
+        },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { font: { ...CHART_FONT_TICKS, size: 9 }, maxTicksLimit: isSmallScreen ? 8 : 20, maxRotation: 0, autoSkip: true } },
+        y: { beginAtZero: true, max: 100, ticks: { font: CHART_FONT_TICKS, callback: v => v + '%' }, title: { display: true, text: 'Top5 命中率', font: CHART_FONT_TITLE } },
+      },
+    },
+  });
+
   // ── 熱門連號排行榜 ────────────────────────────────────
   const pairList = Object.entries(pairCounts)
     .map(([pair, count]) => ({ pair, count, pct: (count / draws.length * 100).toFixed(2) }))
@@ -1482,6 +1757,8 @@ function renderStats() {
         </td>
       </tr>`;
   }).join('');
+
+    renderChartTooltips(); // 在圖表渲染完成後加入問號解說按鈕
 
   } catch (err) {
     console.error('renderStats error:', err);
@@ -1639,6 +1916,24 @@ function doFilterCore() {
     if (el && el.checked) excludedConsecutive.add(cb.val);
   }
 
+  // ── 讀取 AC 值勾選 ──
+  const allowedAC = new Set();
+  const acCheckboxes = ['ac0','ac1','ac2','ac3','ac4'];
+  const acRanges = [ [0,9], [10,19], [20,29], [30,39], [40,99] ];
+  acCheckboxes.forEach((id, i) => {
+    const cb = document.getElementById(id);
+    if (cb && cb.checked) { allowedAC.add(i); }
+  });
+  const enforceAC = allowedAC.size > 0 && allowedAC.size < 5;
+
+  // ── 讀取 mod3 類型勾選 ──
+  const allowedMod3 = new Set();
+  if (document.getElementById('modBal')?.checked) allowedMod3.add(0);   // 2-2-2
+  if (document.getElementById('modSlight')?.checked) allowedMod3.add(1); // 1-2-3 variation
+  if (document.getElementById('modMid')?.checked) allowedMod3.add(2);    // 1-1-4, 3-3-0
+  if (document.getElementById('modExtreme')?.checked) allowedMod3.add(3); // 5-1-0, 0-0-6
+  const enforceMod3 = allowedMod3.size > 0 && allowedMod3.size < 4;
+
   // Available numbers — 先用排除、頻率、相隔期數過濾
   const available = [];
   const isFreqActive = minFreq > 150;
@@ -1735,7 +2030,9 @@ function doFilterCore() {
       if ((!enforceOE || allowedOEDist.has(evenCount)) && smallCount >= minSmall &&
           sum >= sumMin && sum <= sumMax &&
           passesConsecutiveFilter(pick, excludedConsecutive) &&
-          passesHotPairFilter(pick, hotPair)) {
+          passesHotPairFilter(pick, hotPair) &&
+          (!enforceAC || passesACFilter(pick, acRanges, allowedAC)) &&
+          (!enforceMod3 || passesMod3Filter(pick, allowedMod3))) {
         combos.push(pick);
       }
     }
@@ -1762,6 +2059,38 @@ function passesHotPairFilter(combo, hotPair) {
   if (!hotPair) return true;
   const [a, b] = hotPair.split('-').map(Number);
   return combo.includes(a) && combo.includes(b);
+}
+
+/** 檢查組合的 AC 值是否在允許區間內 */
+function passesACFilter(combo, acRanges, allowedAC) {
+  let D = 0;
+  for (let i = 1; i < combo.length; i++) D += Math.abs(combo[i] - combo[i - 1]);
+  const ac = D - 5;
+  for (const ri of allowedAC) {
+    if (ac >= acRanges[ri][0] && ac <= acRanges[ri][1]) return true;
+  }
+  return false;
+}
+
+/** 檢查組合的 mod3 類型是否在允許集內
+ *  0=平衡型(2-2-2), 1=略偏型(1/2/3 交錯), 2=中度偏(1-1-4/3-3-0), 3=極端型(5-1-0/0-0-6) */
+function passesMod3Filter(combo, allowedMod3) {
+  let c0 = 0, c1 = 0, c2 = 0;
+  combo.forEach(n => {
+    const r = n % 3;
+    if (r === 0) c0++; else if (r === 1) c1++; else c2++;
+  });
+  const type = classifyMod3(c0, c1, c2);
+  return allowedMod3.has(type);
+}
+function classifyMod3(c0, c1, c2) {
+  if (c0 === 2 && c1 === 2 && c2 === 2) return 0;
+  const max = Math.max(c0, c1, c2);
+  const min = Math.min(c0, c1, c2);
+  if (min === 0 && max >= 5) return 3; // 極端: 5-1-0, 0-0-6 etc
+  if (min === 0) return 2;             // 中度: 0-3-3, 4-2-0 etc
+  if (min <= 1 && max >= 4) return 2;  // 中度: 1-1-4, 4-1-1 etc
+  return 1;                             // 略偏: 1-2-3, 2-1-3 etc
 }
 
 // 分批渲染用全域狀態

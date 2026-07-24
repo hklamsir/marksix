@@ -4,8 +4,8 @@
    方案 B · 活力大膽 (Neubrutalist + Vibrant Block-based)
    ============================================================ */
 
-/* --- Font Import: Lexend Mega (標題) + Public Sans (正文) --- */
-@import url('https://fonts.googleapis.com/css2?family=Lexend+Mega:wght@100..900&family=Public+Sans:wght@100..900&display=swap');
+/* --- Font Import: Lexend Mega (拉丁標題) + Public Sans (拉丁正文) + Noto Sans TC (中文) --- */
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Mega:wght@100..900&family=Noto+Sans+TC:wght@400;500;700&family=Public+Sans:wght@400;500;700&display=swap');
 
 /* --- CSS Variables / Design Tokens --- */
 :root {
@@ -81,8 +81,17 @@ a:hover { color: var(--text); }
   align-items: center;
   justify-content: space-between;
 }
-.header-logo { display: flex; align-items: center; }
-.logo-svg { display: block; height: 42px; width: auto; }
+.header-logo { display: flex; align-items: center; gap: 14px; }
+.logo-svg { display: block; width: 56px; height: 56px; flex-shrink: 0; }
+.header-titles { display: flex; flex-direction: column; line-height: 1.2; }
+.header-title {
+  font-size: 1.3rem; font-weight: 700; letter-spacing: 1px;
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+.header-subtitle {
+  font-size: 0.72rem; opacity: 0.85; font-weight: 500; letter-spacing: 0.5px;
+  font-family: "Public Sans", sans-serif;
+}
 .header-logo h1 {
   font-size: 1.4rem; font-weight: 700; letter-spacing: 1px;
   font-family: "Lexend Mega", "Noto Sans TC", sans-serif;
@@ -317,7 +326,33 @@ a:hover { color: var(--text); }
 .calc-breakdown { margin-top: 16px; }
 .calc-breakdown-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 2px solid rgba(255,255,255,0.2); font-size: 0.9rem; }
 
-/* --- Statistics --- */
+/* --- Chart Tooltip / Help Icon --- */
+.info-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: #000; color: var(--accent); font-size: 11px; font-weight: 700;
+  cursor: pointer; margin-left: 6px; transition: all var(--ease);
+  border: none; flex-shrink: 0; font-family: inherit;
+}
+.info-icon:hover { background: var(--accent); color: #000; }
+.chart-tooltip {
+  display: none; position: absolute; z-index: 999;
+  background: #fff; border: 3px solid #000; box-shadow: 5px 5px 0 #000;
+  padding: 16px 18px; max-width: 320px; min-width: 240px;
+  font-size: 13px; color: #000; line-height: 1.6;
+}
+.chart-tooltip.show { display: block; }
+.chart-tooltip strong { font-weight: 700; font-size: 13px; }
+.chart-tooltip p { margin: 0 0 8px 0; }
+.chart-tooltip p:last-child { margin-bottom: 0; }
+.chart-tooltip .close-btn {
+  position: absolute; top: 6px; right: 10px; background: none; border: none;
+  font-size: 16px; cursor: pointer; font-weight: 700; color: #000;
+  line-height: 1;
+}
+.chart-title-row { display: flex; align-items: center; position: relative; flex-wrap: wrap; }
+
+/* --- Stats Card --- */
 .stats-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
 .stats-card { background: var(--bg-card); box-shadow: var(--shadow); padding: 24px; border: 3px solid var(--border); }
 .stats-card .chart-title { font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 16px; }
@@ -393,7 +428,8 @@ a:hover { color: var(--text); }
   .latest-draw-header { flex-direction: column; align-items: flex-start; }
   .history-controls { flex-direction: column; }
   .header-logo h1 { font-size: 1.1rem; }
-  .logo-svg { height: 32px; }
+  .logo-svg { width: 44px; height: 44px; }
+  .header-title { font-size: 1.05rem; }
   .section-title { font-size: 1.2rem; }
   .header { padding: 12px 0; }
 }
