@@ -13,6 +13,36 @@ const Store = {
   updated: '',
 };
 
+// ==================== Toast Notification ====================
+
+/** Show a toast message that auto-dismisses after 3 seconds */
+function showToast(msg) {
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  container.appendChild(el);
+  el.addEventListener('animationend', (e) => {
+    if (e.animationName === 'toastOut') el.remove();
+  });
+}
+
+// ==================== Back to Top ====================
+
+function initBackToTop() {
+  const btn = document.getElementById('backToTop');
+  if (!btn) return;
+  const onScroll = () => {
+    btn.classList.toggle('visible', window.scrollY > 400);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  btn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  onScroll();
+}
+
 // ==================== Utilities ====================
 
 /** Get ball color class by number */
@@ -244,7 +274,12 @@ function switchModule(moduleName) {
       ensureCheckerEvents();
       break;
     case 'calculator': initCalculator(); break;
-    case 'stats': renderStats(); break;
+    case 'stats':
+      if (!_statsRendered) {
+        _statsRendered = true;
+        renderStats();
+      }
+      break;
     case 'filter': initFilter(); break;
   }
 
@@ -711,7 +746,7 @@ function toggleCheckerNumber(num, btn) {
     } else if (state.mainNumbers.length < CHECKER_SINGLE_COUNT) {
       state.mainNumbers = [...state.mainNumbers, num];
     } else {
-      alert(`單式投注只可選擇 ${CHECKER_SINGLE_COUNT} 個正選號碼，請先取消已選號碼`);
+      showToast(`單式投注只可選擇 ${CHECKER_SINGLE_COUNT} 個正選號碼，請先取消已選號碼`);
       return;
     }
   } else if (state.betType === 'multiple') {
@@ -727,7 +762,7 @@ function toggleCheckerNumber(num, btn) {
       state.legNumbers = state.legNumbers.filter(n => n !== num);
     } else if (state.pickTarget === 'banker') {
       if (state.bankerNumbers.length >= CHECKER_MAX_BANKERS) {
-        alert(`膽碼最多只可選擇 ${CHECKER_MAX_BANKERS} 個（需保留至少 1 個名額給腳碼）`);
+        showToast(`膽碼最多只可選擇 ${CHECKER_MAX_BANKERS} 個（需保留至少 1 個名額給腳碼）`);
         return;
       }
       state.bankerNumbers = [...state.bankerNumbers, num];
@@ -852,13 +887,16 @@ function checkerPrizeAmount(draw, tier) {
 /**
  * 複式投注：從已選的號碼池中，計算各「中幾個正選號碼」對應的注數分佈。
  * 用超幾何分佈的組合公式直接計算，不需逐注枚舉，號碼池再大也能即時算出。
+ * @param {number[]} pool - 已選號碼池
+ * @param {number[]} drawMain - 開獎正選號碼
+ * @param {number} [chooseSize=6] - 每注選幾個號碼（內部用，用於特別號碼拆分計算）
  */
-function computeMultipleDistribution(pool, drawMain) {
-  const hit = pool.filter(n => drawMain.includes(n)).length; // 號碼池中命中正選的數目
+function computeMultipleDistribution(pool, drawMain, chooseSize = 6) {
+  const hit = pool.filter(n => drawMain.includes(n)).length;
   const miss = pool.length - hit;
   const dist = {};
-  for (let k = 0; k <= 6; k++) {
-    const count = combination(hit, k) * combination(miss, 6 - k);
+  for (let k = 0; k <= chooseSize; k++) {
+    const count = combination(hit, k) * combination(miss, chooseSize - k);
     if (count > 0) dist[k] = count;
   }
   return dist;
@@ -881,6 +919,66 @@ function computeBankerDistribution(bankers, legs, drawMain) {
     }
   }
   return dist;
+}
+
+/**
+ * 當號碼池包含特別號碼時，將分佈拆分為「包含特別號碼」和「不含特別號碼」
+ * 兩組，以正確計算獎級（因為特別號碼的有無會影響獎級判定）。
+ *
+ * 返回 { withSpecial: dist | null, withoutSpecial: dist | null }
+ * 若無法/不需拆分則兩者皆為 null（caller 使用原始 dist）。
+ */
+function splitDistributionBySpecial(pool, drawMain, specialNum, betType, bankers) {
+  const hasSpecial = pool.includes(specialNum);
+  if (!hasSpecial) {
+    return { withSpecial: null, withoutSpecial: null };
+  }
+
+  if (betType === 'multiple') {
+    const poolNoSpecial = pool.filter(n => n !== specialNum);
+    return {
+      withSpecial: computeMultipleDistribution(poolNoSpecial, drawMain, 5),
+      withoutSpecial: computeMultipleDistribution(poolNoSpecial, drawMain, 6),
+    };
+  }
+
+  // banker mode
+  if (bankers.includes(specialNum)) {
+    // 特別號碼在膽碼中：所有組合都包含特別號碼
+    return { withSpecial: null, withoutSpecial: null };
+  }
+
+  // 特別號碼在腳碼中：需要拆分
+  const poolNoSpecial = pool.filter(n => n !== specialNum);
+  const bankersNoSpecial = bankers;
+  const legsNoSpecial = poolNoSpecial.filter(n => !bankers.includes(n));
+  const need = 6 - bankers.length;
+
+  const hitBanker = bankers.filter(n => drawMain.includes(n)).length;
+  const hitLegTotal = legsNoSpecial.filter(n => drawMain.includes(n)).length;
+  const missLegTotal = legsNoSpecial.length - hitLegTotal;
+
+  // 組合包含特別號碼：從腳碼(不含特別)中選 need-1 個
+  const withSpecial = {};
+  for (let j = 0; j <= need - 1; j++) {
+    const count = combination(hitLegTotal, j) * combination(missLegTotal, need - 1 - j);
+    if (count > 0) {
+      const k = hitBanker + j;
+      withSpecial[k] = (withSpecial[k] || 0) + count;
+    }
+  }
+
+  // 組合不含特別號碼：從腳碼(不含特別)中選 need 個
+  const withoutSpecial = {};
+  for (let j = 0; j <= need; j++) {
+    const count = combination(hitLegTotal, j) * combination(missLegTotal, need - j);
+    if (count > 0) {
+      const k = hitBanker + j;
+      withoutSpecial[k] = (withoutSpecial[k] || 0) + count;
+    }
+  }
+
+  return { withSpecial, withoutSpecial };
 }
 
 function doCheck() {
@@ -916,7 +1014,7 @@ function doCheck() {
 
     if (state.betType === 'single') {
       if (state.mainNumbers.length < CHECKER_SINGLE_COUNT) {
-        alert(`請選擇 ${CHECKER_SINGLE_COUNT} 個正選號碼！`);
+        showToast(`請選擇 ${CHECKER_SINGLE_COUNT} 個正選號碼！`);
         return;
       }
       const matchMain = state.mainNumbers.filter(n => draw.main_numbers.includes(n)).length;
@@ -926,30 +1024,32 @@ function doCheck() {
 
     if (state.betType === 'multiple') {
       if (state.mainNumbers.length < 7) {
-        alert('複式投注最少需要選擇 7 個號碼！（6 個或以下請使用「單式」）');
+        showToast('複式投注最少需要選擇 7 個號碼！（6 個或以下請使用「單式」）');
         return;
       }
       const dist = computeMultipleDistribution(state.mainNumbers, draw.main_numbers);
       const totalUnits = combination(state.mainNumbers.length, 6);
-      renderMultiCheckResult(draw, state.mainNumbers, dist, totalUnits, matchSpecial, unitBet);
+      const split = splitDistributionBySpecial(state.mainNumbers, draw.main_numbers, draw.special_number, 'multiple', []);
+      renderMultiCheckResult(draw, state.mainNumbers, dist, totalUnits, split, unitBet);
       return;
     }
 
     if (state.betType === 'banker') {
       const { bankerNumbers, legNumbers } = state;
       if (bankerNumbers.length < 1) {
-        alert('請至少選擇 1 個膽碼！');
+        showToast('請至少選擇 1 個膽碼！');
         return;
       }
       const need = 6 - bankerNumbers.length;
       if (legNumbers.length < need) {
-        alert(`腳碼數量不足，尚需最少 ${need} 個腳碼！`);
+        showToast(`腳碼數量不足，尚需最少 ${need} 個腳碼！`);
         return;
       }
       const dist = computeBankerDistribution(bankerNumbers, legNumbers, draw.main_numbers);
       const totalUnits = combination(legNumbers.length, need);
       const fullPool = [...bankerNumbers, ...legNumbers];
-      renderMultiCheckResult(draw, fullPool, dist, totalUnits, matchSpecial, unitBet);
+      const split = splitDistributionBySpecial(fullPool, draw.main_numbers, draw.special_number, 'banker', bankerNumbers);
+      renderMultiCheckResult(draw, fullPool, dist, totalUnits, split, unitBet);
       return;
     }
   } catch (err) {
@@ -1015,28 +1115,65 @@ function renderSingleCheckResult(draw, mainNumbers, matchMain, matchSpecial, uni
 }
 
 /** 複式／膽拖比對結果：依「中幾個正選號碼」分組列出每級的中獎注數與金額 */
-function renderMultiCheckResult(draw, fullPool, dist, totalUnits, matchSpecial, unitBet) {
+function renderMultiCheckResult(draw, fullPool, dist, totalUnits, split, unitBet) {
   const resultDiv = document.getElementById('checkerResult');
   const sortedPool = [...fullPool].sort((a, b) => a - b);
+
+  // 是否有特別號碼拆分（精確計算）
+  const hasSplit = split && (split.withSpecial || split.withoutSpecial);
 
   const rows = [];
   let totalWinUnits = 0;
   let totalAmount = 0;
 
-  for (let k = 6; k >= 3; k--) {
-    const count = dist[k] || 0;
-    if (count <= 0) continue;
-    const tier = resolveCheckerPrizeTier(k, matchSpecial);
-    if (!tier) continue;
-    const amount = checkerPrizeAmount(draw, tier);
-    if (!amount) continue;
-    const subtotal = amount * count;
-    totalWinUnits += count;
-    totalAmount += subtotal;
-    rows.push({ k, tier, count, amount, subtotal });
+  if (hasSplit) {
+    // 精確模式：分別計算包含/不含特別號碼的組合獎級
+    const tierMap = {};
+    if (split.withSpecial) {
+      for (let k = 6; k >= 3; k--) {
+        const count = split.withSpecial[k] || 0;
+        if (count <= 0) continue;
+        const tier = resolveCheckerPrizeTier(k, true);
+        if (!tier) continue;
+        tierMap[tier] = (tierMap[tier] || 0) + count;
+      }
+    }
+    if (split.withoutSpecial) {
+      for (let k = 6; k >= 3; k--) {
+        const count = split.withoutSpecial[k] || 0;
+        if (count <= 0) continue;
+        const tier = resolveCheckerPrizeTier(k, false);
+        if (!tier) continue;
+        tierMap[tier] = (tierMap[tier] || 0) + count;
+      }
+    }
+    for (const [tier, count] of Object.entries(tierMap)) {
+      const amount = checkerPrizeAmount(draw, tier);
+      if (!amount) continue;
+      const subtotal = amount * count;
+      totalWinUnits += count;
+      totalAmount += subtotal;
+      rows.push({ tier, count, amount, subtotal });
+    }
+  } else {
+    // 簡化模式：特別號碼全有或全無（split 不可用時的 fallback）
+    const matchSpecial = split ? false : fullPool.includes(draw.special_number);
+    for (let k = 6; k >= 3; k--) {
+      const count = dist[k] || 0;
+      if (count <= 0) continue;
+      const tier = resolveCheckerPrizeTier(k, matchSpecial);
+      if (!tier) continue;
+      const amount = checkerPrizeAmount(draw, tier);
+      if (!amount) continue;
+      const subtotal = amount * count;
+      totalWinUnits += count;
+      totalAmount += subtotal;
+      rows.push({ k, tier, count, amount, subtotal });
+    }
   }
 
-  const specialNote = matchSpecial ? '<div class="matched-label" style="margin-top:8px;">🎯 你的號碼中包含特別號碼 <strong>' + draw.special_number + '</strong>，獎級已相應提升！</div>' : '';
+  const hasSpecial = fullPool.includes(draw.special_number);
+  const specialNote = hasSpecial ? '<div class="matched-label" style="margin-top:8px;">🎯 你的號碼中包含特別號碼 <strong>' + draw.special_number + '</strong>，獎級已相應提升！</div>' : '';
 
   const ballsBlock = `
     <div class="ball-row" style="justify-content:center;margin-top:8px;">
@@ -1061,7 +1198,7 @@ function renderMultiCheckResult(draw, fullPool, dist, totalUnits, matchSpecial, 
 
   const rowsHtml = rows.map(r => `
     <div class="calc-breakdown-item">
-      <span>${r.tier}（中 ${r.k} 個正選號碼${matchSpecial ? '＋特別號碼' : ''}）× ${r.count.toLocaleString()} 注</span>
+      <span>${r.tier} × ${r.count.toLocaleString()} 注</span>
       <span><strong>${formatCurrency(r.subtotal)}</strong></span>
     </div>`).join('');
 
@@ -1211,12 +1348,12 @@ function doCalculate() {
     const leg = parseInt(document.getElementById('legCount').value);
     const totalNums = banker + leg;
     if (totalNums < 6) {
-      alert('膽 + 腳總數必須至少為 6！');
+      showToast('膽 + 腳總數必須至少為 6！');
       return;
     }
     const needFromLeg = 6 - banker;
     if (needFromLeg > leg) {
-      alert('腳的數量不足以組成 6 個號碼！');
+      showToast('腳的數量不足以組成 6 個號碼！');
       return;
     }
     units = combination(leg, needFromLeg);
@@ -1252,6 +1389,7 @@ function doCalculate() {
 // ==================== Module 6: Statistics ====================
 
 let statsCharts = {};
+let _statsRendered = false;
 
 // Shared font config — applied to all charts for consistent readability
 const CHART_FONT = { family: 'Public Sans, Noto Sans TC, sans-serif', size: 13 };
@@ -1758,6 +1896,30 @@ function renderStats() {
       </tr>`;
   }).join('');
 
+    // 無障礙：為所有圖表 canvas 加入 aria-label 與隱藏文字摘要
+    const chartAriaMap = {
+      chartFrequency: { label: '號碼出現頻率長條圖', summary: `49 個號碼在 ${draws.length} 期中的出現頻率分佈，縱軸為出現次數，橫軸為 1 至 49 號碼` },
+      chartOddEven: { label: '奇偶號碼比例分布圓餅圖', summary: '每期開出偶數號碼個數的比例分佈（0 至 6 個），數據基於所有開獎記錄' },
+      chartSumRange: { label: '號碼總和範圍分布長條圖', summary: '每期 6 個正選號碼總和的分佈區間圖，區間為 21 至 279，每個桶寬 20' },
+      chartBigSmall: { label: '大小號碼比例分布長條圖', summary: '每期小號（≤24）個數的頻率分佈，範圍 0 至 6 個' },
+      chartConsecutive: { label: '連號分布長條圖', summary: '每期連續號碼對數的分佈（0 至 5 對），由排序後相鄰號碼差為 1 計算' },
+      chartSpan: { label: '號碼跨度分佈長條圖', summary: '每期最大號碼減最小號碼的跨度值分佈，橫軸為跨度區間，縱軸為出現頻率' },
+      chartAC: { label: 'AC 值分佈長條圖', summary: '算術複雜度 AC 值 = 六個相鄰差絕對值總和減 5，理論範圍 0 至 43，橫軸為 AC 值區間' },
+      chartOmission: { label: '遺漏值排行水平長條圖', summary: '各號碼距離上次出現的期數，紅色表示超過 15 期未開，黃色為 6 至 15 期，綠色為 5 期以內' },
+      chartMod3: { label: '除三餘數分佈長條圖', summary: '每期號碼除 3 餘數 0、1、2 的個數比例分佈，共 28 種可能組合，2-2-2 平衡型以黃色高亮' },
+      chartHotCold: { label: '冷熱轉折趨勢折線圖', summary: '最近 60 期滑動窗口中 Top 5 熱門號碼的命中率變化趨勢，縱軸為命中百分比' },
+    };
+    for (const [id, info] of Object.entries(chartAriaMap)) {
+      const canvas = document.getElementById(id);
+      if (!canvas) continue;
+      canvas.setAttribute('aria-label', info.label);
+      canvas.setAttribute('role', 'img');
+      const summary = document.createElement('div');
+      summary.className = 'visually-hidden';
+      summary.textContent = info.summary;
+      canvas.parentNode.appendChild(summary);
+    }
+
     renderChartTooltips(); // 在圖表渲染完成後加入問號解說按鈕
 
   } catch (err) {
@@ -1985,7 +2147,9 @@ function doFilterCore() {
       if ((!enforceOE || allowedOEDist.has(evenCount)) && smallCount >= minSmall &&
           sum >= sumMin && sum <= sumMax &&
           passesConsecutiveFilter(combo, excludedConsecutive) &&
-          passesHotPairFilter(combo, hotPair)) {
+          passesHotPairFilter(combo, hotPair) &&
+          (!enforceAC || passesACFilter(combo, acRanges, allowedAC)) &&
+          (!enforceMod3 || passesMod3Filter(combo, allowedMod3))) {
         combos.push([...combo]);
         if (combos.length >= MAX_COMBOS) break;
       }
@@ -2214,6 +2378,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   initNavigation();
+  initBackToTop();
 
   // Event bindings — with null checks and backup via ensureCheckerEvents
   const btnCheck = document.getElementById('btnCheck');

@@ -92,14 +92,6 @@ a:hover { color: var(--text); }
   font-size: 0.72rem; opacity: 0.85; font-weight: 500; letter-spacing: 0.5px;
   font-family: "Public Sans", sans-serif;
 }
-.header-logo h1 {
-  font-size: 1.4rem; font-weight: 700; letter-spacing: 1px;
-  font-family: "Lexend Mega", "Noto Sans TC", sans-serif;
-}
-.header-logo .subtitle {
-  font-size: 0.75rem; opacity: 0.85; font-weight: 500;
-  font-family: "Public Sans", sans-serif;
-}
 .header-update { font-size: 0.8rem; opacity: 0.8; }
 
 /* --- Navigation --- */
@@ -407,6 +399,85 @@ a:hover { color: var(--text); }
 .error-msg{background:#FF5757;color:#fff;padding:12px 16px;border:3px solid var(--primary);font-size:0.9rem;font-weight:600}
 .empty-state{text-align:center;padding:40px 20px;color:var(--text-light)}
 .empty-state .empty-icon{font-size:3rem;margin-bottom:12px}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* --- Skip Link --- */
+.skip-link {
+  position: absolute; top: -100px; left: 16px; z-index: 9999;
+  background: var(--accent); color: var(--primary); padding: 10px 18px;
+  border: 3px solid var(--border); font-weight: 700; text-decoration: none;
+  font-family: inherit; font-size: 0.9rem;
+}
+.skip-link:focus { top: 8px; }
+
+/* --- Toast --- */
+.toast-container {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  z-index: 9999; display: flex; flex-direction: column; align-items: center;
+  gap: 8px; pointer-events: none;
+}
+.toast {
+  background: var(--primary); color: var(--accent); padding: 12px 24px;
+  border: 3px solid var(--border); box-shadow: var(--shadow);
+  font-weight: 600; font-size: 0.9rem; pointer-events: auto;
+  animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+  max-width: 90vw; text-align: center;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes toastOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-16px); } }
+
+/* --- Back to Top --- */
+.back-to-top {
+  position: fixed; bottom: 28px; right: 28px; z-index: 1000;
+  width: 48px; height: 48px; border: 3px solid var(--border);
+  background: var(--accent); color: var(--primary); font-size: 1.4rem;
+  font-weight: 800; cursor: pointer; box-shadow: var(--shadow);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow var(--ease);
+  pointer-events: none;
+}
+.back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.back-to-top:hover { box-shadow: var(--shadow-hover); transform: translate(-2px, -2px); }
+
+/* --- Responsive: Tablet (≤1024px) --- */
+@media (max-width: 1024px) {
+  .main { padding: 20px 16px 48px; }
+  .header { padding: 12px 0; }
+  .header-title { font-size: 1.15rem; }
+  .header-subtitle { font-size: 0.68rem; }
+  .header-logo { gap: 10px; }
+  .logo-svg { width: 48px; height: 48px; }
+  .nav-tab { padding: 12px 14px; font-size: 0.82rem; }
+  .section-title { font-size: 1.3rem; }
+  .section-desc { font-size: 0.9rem; }
+  .card { padding: 20px; }
+  .ball { width: 40px; height: 40px; font-size: 1rem; }
+  .ball-lg { width: 48px; height: 48px; font-size: 1.2rem; }
+  .ball-sm { width: 30px; height: 30px; font-size: 0.78rem; }
+  .draw-no { font-size: 1.6rem; }
+  /* 統計圖表: 2 欄 */
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  /* 篩選器: 縮窄側欄 */
+  .filter-container { grid-template-columns: 260px 1fr; }
+  .filter-sidebar { padding: 16px; top: 130px; }
+  .filter-results { padding: 16px; }
+  /* 中獎比對 & 計算機: 維持 2 欄但縮小間距 */
+  .checker-container, .calc-container { gap: 16px; }
+  .checker-input-section, .checker-result-section,
+  .calc-form-section, .calc-result-section { padding: 20px; }
+  /* 玩法指南: 卡片最小寬度調小 */
+  .guide-grid { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+  /* 歷史記錄控制項 */
+  .history-controls { gap: 8px; }
+  /* 號碼按鈕格 */
+  .number-grid { gap: 6px; }
+  .exclude-grid { gap: 3px; }
+  .combo-list { grid-template-columns: repeat(2, 1fr); }
+  /* 歷史表格字體稍縮 */
+  .history-table { font-size: 0.82rem; }
+  .history-table th, .history-table td { padding: 8px 10px; }
+}
 
 /* --- Responsive --- */
 @media (max-width: 768px) {
@@ -427,7 +498,6 @@ a:hover { color: var(--text); }
   .stats-grid { grid-template-columns: 1fr; }
   .latest-draw-header { flex-direction: column; align-items: flex-start; }
   .history-controls { flex-direction: column; }
-  .header-logo h1 { font-size: 1.1rem; }
   .logo-svg { width: 44px; height: 44px; }
   .header-title { font-size: 1.05rem; }
   .section-title { font-size: 1.2rem; }
