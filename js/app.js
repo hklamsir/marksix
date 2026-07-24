@@ -1254,10 +1254,10 @@ function doCalculate() {
 let statsCharts = {};
 
 // Shared font config — applied to all charts for consistent readability
-const CHART_FONT = { family: 'system-ui, sans-serif', size: 13 };
-const CHART_FONT_TITLE = { family: 'system-ui, sans-serif', size: 14, weight: '600' };
-const CHART_FONT_LEGEND = { size: 12 };
-const CHART_FONT_TICKS = { size: 12 };
+const CHART_FONT = { family: 'Public Sans, Noto Sans TC, sans-serif', size: 13 };
+const CHART_FONT_TITLE = { family: 'Lexend Mega, Noto Sans TC, sans-serif', size: 14, weight: '600' };
+const CHART_FONT_LEGEND = { family: 'Public Sans, Noto Sans TC, sans-serif', size: 12 };
+const CHART_FONT_TICKS = { family: 'Public Sans, Noto Sans TC, sans-serif', size: 11 };
 
 function renderStats() {
   try {
@@ -1293,6 +1293,7 @@ function renderStats() {
   const bgColors = freqSorted.map(f => getBallFgColor(f.num));
 
   const freqCtx = document.getElementById('chartFrequency').getContext('2d');
+  const isSmallScreen = window.innerWidth < 768;
   statsCharts.freq = new Chart(freqCtx, {
     type: 'bar',
     data: {
@@ -1301,15 +1302,24 @@ function renderStats() {
         label: '出現次數',
         data,
         backgroundColor: bgColors,
-        borderRadius: 2,
+        borderRadius: isSmallScreen ? 0 : 2,
       }],
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: { ticks: { font: CHART_FONT_TICKS } },
-        y: { beginAtZero: false, ticks: { font: CHART_FONT_TICKS } },
+        x: {
+          ticks: {
+            font: { ...CHART_FONT_TICKS, size: isSmallScreen ? 9 : 11 },
+            autoSkip: true,
+            maxTicksLimit: isSmallScreen ? 16 : 49,
+            maxRotation: isSmallScreen ? 90 : 0,
+            minRotation: isSmallScreen ? 60 : 0,
+          },
+        },
+        y: { beginAtZero: false, ticks: { font: { ...CHART_FONT_TICKS, size: 11 } } },
       },
     },
   });
