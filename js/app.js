@@ -265,7 +265,7 @@ function renderLatest() {
   // Draw card
   const card = document.getElementById('latestDrawCard');
   const snowballHtml = draw.is_snowball
-    ? '<span class="draw-snowball">❄️ 雪球獎金</span>'
+    ? '<span class="draw-snowball">❄️ 多寶獎金</span>'
     : '';
 
   card.innerHTML = `
@@ -308,6 +308,7 @@ function renderLatest() {
         const isJackpot = name === '頭獎' && pool?.jackpot > 0;
         // 中獎注數 = prize.winners / unit_bet
         const winningUnits = (p.winners / unitBet).toFixed(1);
+
         prizeHtml += `
           <tr class="${isJackpot ? 'highlight-row' : ''}">
             <td class="prize-label">${isJackpot ? '🌟 ' : ''}${name}</td>
@@ -517,7 +518,7 @@ function renderExpandContent(draw) {
   let html = '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;">';
   html += `<strong>第 ${draw.draw_no} 期</strong>`;
   html += renderBalls(draw.main_numbers, draw.special_number, 'ball-sm');
-  if (draw.is_snowball) html += ' <span class="draw-snowball">❄️ 雪球</span>';
+  if (draw.is_snowball) html += ' <span class="draw-snowball">❄️ 多寶</span>';
   html += '</div>';
 
   if (draw.prizes) {

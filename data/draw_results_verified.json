@@ -7,8 +7,8 @@
   "year_range": "2002-2026",
   "source": "records_no1-49.xlsx",
   "date_note": "已由香港賽馬會(HKJC)官方開獎公告核實並修正：原日期為依開獎頻率估算（全部錯誤，誤差隨期數遞增），現已以官方 drawDate 取代；另修正 4 期號碼錯誤。來源: bet.hkjc.com/ch/marksix/results",
-  "prizes_updated": "2026-07-21 15:35:32",
-  "prizes_source": "HKJC 官方 GraphQL (info.cld.hkjc.com/graphql/base/, marksixResult.lotteryPool)",
+  "prizes_updated": "2026-07-24 02:09:01",
+  "prizes_source": "HKJC 官方 GraphQL (方案A修正: winners=原始winningUnit)",
   "prizes_coverage": "3354/3354 期含派彩"
  },
  "draws": [
@@ -29,31 +29,31 @@
    "prizes": {
     "頭獎": {
      "amount": 51493590,
-     "winners": 2
+     "winners": 20
     },
     "二獎": {
      "amount": 811220,
-     "winners": 12
+     "winners": 115
     },
     "三獎": {
      "amount": 85190,
-     "winners": 292
+     "winners": 2920
     },
     "四獎": {
      "amount": 9600,
-     "winners": 970
+     "winners": 9695
     },
     "五獎": {
      "amount": 640,
-     "winners": 16617
+     "winners": 166167
     },
     "六獎": {
      "amount": 320,
-     "winners": 26517
+     "winners": 265165
     },
     "七獎": {
      "amount": 40,
-     "winners": 325317
+     "winners": 3253166
     },
     "_pool": {
      "status": "Payout",
@@ -81,31 +81,31 @@
    "prizes": {
     "頭獎": {
      "amount": 8000000,
-     "winners": 1
+     "winners": 10
     },
     "二獎": {
      "amount": 740570,
-     "winners": 2
+     "winners": 20
     },
     "三獎": {
      "amount": 78990,
-     "winners": 50
+     "winners": 500
     },
     "四獎": {
      "amount": 9600,
-     "winners": 136
+     "winners": 1360
     },
     "五獎": {
      "amount": 640,
-     "winners": 2862
+     "winners": 28615
     },
     "六獎": {
      "amount": 320,
-     "winners": 3909
+     "winners": 39086
     },
     "七獎": {
      "amount": 40,
-     "winners": 54970
+     "winners": 549696
     },
     "_pool": {
      "status": "Payout",
@@ -133,31 +133,31 @@
    "prizes": {
     "頭獎": {
      "amount": 4000000,
-     "winners": 2
+     "winners": 20
     },
     "二獎": {
      "amount": 1239630,
-     "winners": 1
+     "winners": 5
     },
     "三獎": {
      "amount": 67180,
-     "winners": 62
+     "winners": 615
     },
     "四獎": {
      "amount": 9600,
-     "winners": 160
+     "winners": 1600
     },
     "五獎": {
      "amount": 640,
-     "winners": 3367
+     "winners": 33665
     },
     "六獎": {
      "amount": 320,
-     "winners": 4682
+     "winners": 46815
     },
     "七獎": {
      "amount": 40,
-     "winners": 60489
+     "winners": 604885
     },
     "_pool": {
      "status": "Payout",
@@ -185,31 +185,31 @@
    "prizes": {
     "頭獎": {
      "amount": 8000000,
-     "winners": 1
+     "winners": 10
     },
     "二獎": {
      "amount": 434880,
-     "winners": 3
+     "winners": 30
     },
     "三獎": {
      "amount": 53520,
-     "winners": 65
+     "winners": 650
     },
     "四獎": {
      "amount": 9600,
-     "winners": 150
+     "winners": 1500
     },
     "五獎": {
      "amount": 640,
-     "winners": 4194
+     "winners": 41942
     },
     "六獎": {
      "amount": 320,
-     "winners": 3489
+     "winners": 34894
     },
     "七獎": {
      "amount": 40,
-     "winners": 78063
+     "winners": 780627
     },
     "_pool": {
      "status": "Payout",
@@ -237,31 +237,31 @@
    "prizes": {
     "頭獎": {
      "amount": 8000000,
-     "winners": 1
+     "winners": 10
     },
     "二獎": {
      "amount": 473290,
-     "winners": 3
+     "winners": 25
     },
     "三獎": {
      "amount": 36900,
-     "winners": 86
+     "winners": 855
     },
     "四獎": {
      "amount": 9600,
-     "winners": 406
+     "winners": 4060
     },
     "五獎": {
      "amount": 640,
-     "winners": 4788
+     "winners": 47881
     },
     "六獎": {
      "amount": 320,
-     "winners": 10124
+     "winners": 101236
     },
     "七獎": {
      "amount": 40,
-     "winners": 81241
+     "winners": 812408
     },
     "_pool": {
      "status": "Payout",
@@ -289,31 +289,31 @@
    "prizes": {
     "頭獎": {
      "amount": 8000000,
-     "winners": 1
+     "winners": 5
     },
     "二獎": {
      "amount": 626190,
-     "winners": 3
+     "winners": 25
     },
     "三獎": {
      "amount": 99390,
-     "winners": 42
+     "winners": 420
     },
     "四獎": {
      "amount": 9600,
-     "winners": 106
+     "winners": 1060
     },
     "五獎": {
      "amount": 640,
-     "winners": 2632
+     "winners": 26315
     },
     "六獎": {
      "amount": 320,
-     "winners": 3597
+     "winners": 35970
     },
     "七獎": {
      "amount": 40,
-     "winners": 50925
+     "winners": 509249
     },
     "_pool": {
      "status": "Payout",
@@ -341,7 +341,7 @@
    "prizes": {
     "頭獎": {
      "amount": 13692500,
-     "winners": 1
+     "winners": 10
     },
     "二獎": {
      "amount": 0,
@@ -349,23 +349,23 @@
     },
     "三獎": {
      "amount": 92500,
-     "winners": 55
+     "winners": 547
     },
     "四獎": {
      "amount": 9600,
-     "winners": 125
+     "winners": 1245
     },
     "五獎": {
      "amount": 640,
-     "winners": 3596
+     "winners": 35955
     },
     "六獎": {
      "amount": 320,
-     "winners": 4444
+     "winners": 44435
     },
     "七獎": {
      "amount": 40,
-     "winners": 72086
+     "winners": 720864
     },
     "_pool": {
      "status": "Payout",
@@ -397,27 +397,27 @@
     },
     "二獎": {
      "amount": 748360,
-     "winners": 2
+     "winners": 20
     },
     "三獎": {
      "amount": 68220,
-     "winners": 59
+     "winners": 585
     },
     "四獎": {
      "amount": 9600,
-     "winners": 121
+     "winners": 1205
     },
     "五獎": {
      "amount": 640,
-     "winners": 2796
+     "winners": 27960
     },
     "六獎": {
      "amount": 320,
-     "winners": 3037
+     "winners": 30365
     },
     "七獎": {
      "amount": 40,
-     "winners": 52810
+     "winners": 528104
     },
     "_pool": {
      "status": "Payout",
@@ -445,31 +445,31 @@
    "prizes": {
     "頭獎": {
      "amount": 38908850,
-     "winners": 1
+     "winners": 10
     },
     "二獎": {
      "amount": 769930,
-     "winners": 4
+     "winners": 35
     },
     "三獎": {
      "amount": 67470,
-     "winners": 107
+     "winners": 1065
     },
     "四獎": {
      "amount": 9600,
-     "winners": 360
+     "winners": 3595
     },
     "五獎": {
      "amount": 640,
-     "winners": 5839
+     "winners": 58386
     },
     "六獎": {
      "amount": 320,
-     "winners": 8625
+     "winners": 86251
     },
     "七獎": {
      "amount": 40,
-     "winners": 112431
+     "winners": 1124307
     },
     "_pool": {
      "status": "Payout",
@@ -501,27 +501,27 @@
     },
     "二獎": {
      "amount": 860210,
-     "winners": 3
+     "winners": 30
     },
     "三獎": {
      "amount": 69860,
-     "winners": 99
+     "winners": 985
     },
     "四獎": {
      "amount": 9600,
-     "winners": 274
+     "winners": 2740
     },
     "五獎": {
      "amount": 640,
-     "winners": 5456
+     "winners": 54555
     },
     "六獎": {
      "amount": 320,
-     "winners": 8152
+     "winners": 81524
     },
     "七獎": {
      "amount": 40,
-     "winners": 106849
+     "winners": 1068485
     },
     "_pool": {
      "status": "Payout",
@@ -553,27 +553,27 @@
     },
     "二獎": {
      "amount": 761290,
-     "winners": 3
+     "winners": 25
     },
     "三獎": {
      "amount": 41260,
-     "winners": 123
+     "winners": 1230
     },
     "四獎": {
      "amount": 9600,
-     "winners": 325
+     "winners": 3245
     },
     "五獎": {
      "amount": 640,
-     "winners": 6399
+     "winners": 63987
     },
     "六獎": {
      "amount": 320,
-     "winners": 8249
+     "winners": 82488
     },
     "七獎": {
      "amount": 40,
-     "winners": 107249
+     "winners": 1072492
     },
     "_pool": {
      "status": "Payout",
@@ -609,23 +609,23 @@
     },
     "三獎": {
      "amount": 78820,
-     "winners": 68
+     "winners": 680
     },
     "四獎": {
      "amount": 9600,
-     "winners": 150
+     "winners": 1495
     },
     "五獎": {
      "amount": 640,
-     "winners": 3175
+     "winners": 31745
     },
     "六獎": {
      "amount": 320,
-     "winners": 4672
+     "winners": 46716
     },
     "七獎": {
      "amount": 40,
-     "winners": 61391
+     "winners": 613911
     },
     "_pool": {
      "status": "Payout",

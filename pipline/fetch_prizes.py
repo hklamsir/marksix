@@ -107,16 +107,13 @@ def parse_prizes(draw):
         name = TIER_MAP.get(t)
         if not name:
             continue
-        # 重要：HKJC API 的 winningUnit 並非「中獎注數」本身，
-        # 而是「中獎注數 × unit_bet」(即中獎投注的總面值，單位 HKD)。
-        # 真正的中獎注數(注數) = winningUnit / unit_bet。
-        # 例：七獎 winningUnit=549696, unit_bet=10 -> 54,970 注 (合理)；
-        #     若當成注數直接乘每注派彩 $40 會得 2,200 萬，遠超派彩基金。
-        ub = int(lp.get("unitBet") or 0) or 1
+        # 方案A修正: 直接儲存 HKJC API 的原始 winningUnit。
+        # winningUnit = 中獎注數 × unit_bet (例:七獎 winningUnit=3253166, unitBet=10 → 325316.6 注)。
+        # 前端 app.js 在顯示時再除以 unit_bet。
         wu = int(p.get("winningUnit") or 0)
         tiers[name] = {
             "amount": int(p.get("dividend") or 0),
-            "winners": (wu + ub // 2) // ub if ub else wu,
+            "winners": wu,
         }
     if not tiers:
         return None

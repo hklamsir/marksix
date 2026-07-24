@@ -252,9 +252,10 @@ def _parse_prizes(draw: dict) -> dict | None:
         if not name:
             continue
         wu = int(p.get("winningUnit") or 0)
+        # 方案A: 直接儲存原始 winningUnit，前端在顯示時除以 unit_bet
         tiers[name] = {
             "amount": int(p.get("dividend") or 0),
-            "winners": (wu + ub // 2) // ub if ub else wu,
+            "winners": wu,
         }
 
     if not tiers:

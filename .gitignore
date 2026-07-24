@@ -19,6 +19,7 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+.reports/
 
 # Pipeline caches & temp
 pipline/official_draws_cache.json
