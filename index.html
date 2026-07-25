@@ -18,7 +18,7 @@
       <div class="header-logo">
         <img src="images/logo.svg" alt="香港六合彩資訊網 Logo" class="logo-svg" width="72" height="72">
         <div class="header-titles">
-          <h1 class="header-title">香港六合彩</h1>
+          <h1 class="header-title">香港六合彩資訊網</h1>
           <div class="header-subtitle">Mark Six Information</div>
         </div>
       </div>
@@ -65,10 +65,30 @@
     <section class="module active" id="module-latest">
       <div class="loading" id="latestLoading">載入最新開獎結果...</div>
       <div id="latestContent" style="display:none;">
-        <!-- 最新開獎卡片 -->
-        <div class="card latest-draw-card" id="latestDrawCard"></div>
-        <!-- 派彩詳情 -->
-        <div class="card" id="prizeDetailCard"></div>
+        <!-- 面板區（位於分頁標籤上方，由下方分頁切換） -->
+        <div id="latestPanelArea">
+          <!-- 最新開獎結果面板 -->
+          <div class="subtab-panel active" id="panel-latest">
+            <!-- 最新開獎卡片 -->
+            <div class="card latest-draw-card" id="latestDrawCard"></div>
+            <!-- 派彩詳情 -->
+            <div class="card" id="prizeDetailCard"></div>
+          </div>
+          <!-- 下期攪珠面板 -->
+          <div class="subtab-panel" id="panel-next" style="display:none;">
+            <div class="card next-draw-card" id="nextDrawCard"></div>
+          </div>
+        </div>
+
+        <!-- 分頁區域：位於最新結果頁面底部 -->
+        <div class="subtabs" id="latestSubTabs" role="tablist" aria-label="最新結果分頁">
+          <button class="subtab active" data-sub="latest" role="tab" aria-selected="true" aria-controls="panel-latest">
+            <span class="subtab-icon" aria-hidden="true">🎯</span>最新開獎結果
+          </button>
+          <button class="subtab" data-sub="next" role="tab" aria-selected="false" aria-controls="panel-next">
+            <span class="subtab-icon" aria-hidden="true">📅</span>下期攪珠
+          </button>
+        </div>
       </div>
     </section>
 
@@ -462,7 +482,7 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <p>香港六合彩資訊網 — 資料來源：<a href="https://bet.hkjc.com/marksix/" target="_blank" rel="noopener">香港賽馬會</a></p>
+    <p>香港六合彩資訊網｜林SIR設計 — 資料來源：<a href="https://bet.hkjc.com/marksix/" target="_blank" rel="noopener">香港賽馬會</a></p>
     <p style="margin-top:6px;font-size:0.75rem;">本網站僅供資訊參考，不構成任何投注建議。最新及準確資料請以香港賽馬會官方公布為準。</p>
   </footer>
 

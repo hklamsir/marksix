@@ -41,6 +41,7 @@ DATA_DIR = PROJECT_ROOT / "data"
 QUERY_FILE = SCRIPT_DIR / "marksix_query.graphql"
 DRAWS_JSON = DATA_DIR / "draw_results_verified.json"
 RECORDS_JSON = DATA_DIR / "draw_results_1976_2002.json"
+NEXT_DRAW_JSON = DATA_DIR / "next_draw.json"
 OUTPUT_JS = DATA_DIR / "data.js"
 
 # ---------------------------------------------------------------------------
@@ -327,8 +328,18 @@ def rebuild_data_js() -> None:
     with RECORDS_JSON.open("r", encoding="utf-8") as f:
         records = json.load(f)
 
+    # 下期攪珠資料（由 fetch_next_draw.py 生成;不存在時用空殼）
+    next_draw = {"meta": {}, "schedule": [], "next_draw": {"status": "unavailable"}}
+    if NEXT_DRAW_JSON.exists():
+        try:
+            with NEXT_DRAW_JSON.open("r", encoding="utf-8") as f:
+                next_draw = json.load(f)
+        except Exception:
+            pass
+
     draws_str = json.dumps(draws, ensure_ascii=False, separators=(",", ":"))
     records_str = json.dumps(records, ensure_ascii=False, separators=(",", ":"))
+    next_draw_str = json.dumps(next_draw, ensure_ascii=False, separators=(",", ":"))
 
     header = (
         "/* ============================================================\n"
@@ -338,6 +349,7 @@ def rebuild_data_js() -> None:
         " * ============================================================ */\n"
         f"window.DRAWS_DATA = {draws_str};\n"
         f"window.RECORDS_DATA = {records_str};\n"
+        f"window.NEXT_DRAW_DATA = {next_draw_str};\n"
     )
 
     OUTPUT_JS.write_text(header, encoding="utf-8")
@@ -413,7 +425,17 @@ def main() -> None:
 
     # Step 4: 寫入 JSON 並重建 data.js
     save_draws_json(existing, merged)
-    log("Step 4/4: 重新生成 data/data.js...")
+    log("Step 4/5: 重新計算下期攪珠資料...")
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "fetch_next_draw", SCRIPT_DIR / "fetch_next_draw.py")
+        fnd = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(fnd)
+        fnd.main()
+    except Exception as e:  # noqa: BLE001
+        log(f"  ⚠ 下期攪珠資料重新計算失敗（不影響主流程）: {e}")
+    log("Step 5/5: 重新生成 data/data.js...")
     rebuild_data_js()
 
     log("=" * 60)

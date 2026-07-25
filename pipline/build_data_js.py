@@ -45,6 +45,7 @@ PROJECT_ROOT = SCRIPT_DIR.parent
 DATA_DIR = PROJECT_ROOT / 'data'
 DRAWS_JSON = DATA_DIR / 'draw_results_verified.json'
 RECORDS_JSON = DATA_DIR / 'draw_results_1976_2002.json'
+NEXT_DRAW_JSON = DATA_DIR / 'next_draw.json'
 OUTPUT_JS = DATA_DIR / 'data.js'
 
 JS_HEADER = """/* ============================================================
@@ -54,6 +55,7 @@ JS_HEADER = """/* ============================================================
  * ============================================================ */
 window.DRAWS_DATA = {DRAWS_JSON};
 window.RECORDS_DATA = {RECORDS_JSON};
+window.NEXT_DRAW_DATA = {NEXT_DRAW_JSON};
 """
 
 
@@ -64,12 +66,22 @@ def load_json(path: Path) -> dict:
         return json.load(f)
 
 
-def write_data_js(draws: dict, records: dict) -> None:
+def load_next_draw_json() -> dict:
+    """讀取下期攪珠資料;檔案不存在時回傳空殼(前端會顯示提示)。"""
+    if not NEXT_DRAW_JSON.exists():
+        return {"meta": {}, "schedule": [], "next_draw": {"status": "unavailable"}}
+    with NEXT_DRAW_JSON.open('r', encoding='utf-8') as f:
+        return json.load(f)
+
+
+def write_data_js(draws: dict, records: dict, next_draw: dict) -> None:
     # 緊湊 JSON (separators=(',', ':')) 可比預設縮排省 30-40% 體積
     draws_str = json.dumps(draws, ensure_ascii=False, separators=(',', ':'))
     records_str = json.dumps(records, ensure_ascii=False, separators=(',', ':'))
+    next_draw_str = json.dumps(next_draw, ensure_ascii=False, separators=(',', ':'))
 
-    content = JS_HEADER.format(DRAWS_JSON=draws_str, RECORDS_JSON=records_str)
+    content = JS_HEADER.format(DRAWS_JSON=draws_str, RECORDS_JSON=records_str,
+                               NEXT_DRAW_JSON=next_draw_str)
 
     OUTPUT_JS.write_text(content, encoding='utf-8')
 
@@ -109,11 +121,13 @@ def main() -> None:
     print('📦 打包內嵌資料集...')
     draws = load_json(DRAWS_JSON)
     records = load_json(RECORDS_JSON)
+    next_draw = load_next_draw_json()
     print(f'  · draws:    {len(draws.get("draws", []))} 期')
     print(f'  · records:  {len(records.get("records", []))} 期')
+    print(f'  · next_draw: 第 {(next_draw.get("next_draw") or {}).get("draw_no") or "—"} 期')
 
     t0 = time.time()
-    write_data_js(draws, records)
+    write_data_js(draws, records, next_draw)
     print(f'⏱️  完成,用時 {time.time() - t0:.1f}s')
 
 

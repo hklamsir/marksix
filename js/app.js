@@ -375,6 +375,275 @@ function renderLatest() {
   }
 
   prizeCard.innerHTML = prizeHtml;
+
+  // 渲染「下期攪珠」分頁（資料來源：內嵌 window.NEXT_DRAW_DATA）
+  renderNextDraw();
+}
+
+// ==================== 下期攪珠（子分頁） ====================
+
+let _ndInterval = null;       // 倒數計時 interval 控制碼
+let _ndLiveTried = false;     // 避免重複即時刷新
+
+/** 初始化「最新結果」底部子分頁切換 */
+function initLatestSubTabs() {
+  const tabs = document.querySelectorAll('#latestSubTabs .subtab');
+  const panelLatest = document.getElementById('panel-latest');
+  const panelNext = document.getElementById('panel-next');
+  if (!tabs.length || !panelLatest || !panelNext) return;
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const sub = tab.dataset.sub;
+      tabs.forEach(t => {
+        const on = (t === tab);
+        t.classList.toggle('active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      panelLatest.style.display = (sub === 'latest') ? '' : 'none';
+      panelNext.style.display = (sub === 'next') ? '' : 'none';
+    });
+  });
+}
+
+/** 渲染下期攪珠卡片（資料來源：window.NEXT_DRAW_DATA，由 pipline 離線內嵌） */
+function renderNextDraw(isLive = false) {
+  const card = document.getElementById('nextDrawCard');
+  if (!card) return;
+  const data = (typeof window.NEXT_DRAW_DATA !== 'undefined') ? window.NEXT_DRAW_DATA : null;
+  if (!data || !data.next_draw) {
+    card.innerHTML = '<div class="nd-status">下期攪珠資料暫時無法取得，請稍後再試。</div>';
+    return;
+  }
+  const nd = data.next_draw;
+  if (nd.status === 'unavailable' || !nd.draw_no) {
+    card.innerHTML = '<div class="nd-status">下期攪珠資料暫時無法取得（賽馬會日程表連線失敗）。'
+      + '最新一期開獎結果請參閱「最新開獎結果」分頁。</div>';
+    return;
+  }
+
+  const snowHtml = nd.is_snowball
+    ? `<span class="nd-snowball">❄️ ${nd.snowball_name || '金多寶攪珠'}</span>` : '';
+  const dateLabel = formatNextDate(nd.draw_date, nd.day_of_week);
+
+  // 未來日程（不含已作為標題的下一期本身）
+  const scheduleHtml = renderNextSchedule(data.schedule, nd.draw_date);
+
+  const liveTag = isLive
+    ? '<span class="nd-live-dot"></span>即時更新' : '內嵌資料';
+
+  card.innerHTML = `
+    <div class="nd-header">
+      <div>
+        <div class="nd-eyebrow">下期攪珠</div>
+        <div class="nd-title">第 <span class="nd-no">${nd.draw_no}</span> 期</div>
+      </div>
+      ${snowHtml}
+    </div>
+    <div class="nd-countdown-wrap">
+      <div class="nd-countdown-label">距離攪珠時間還有</div>
+      <div class="nd-countdown" id="ndCountdown"></div>
+    </div>
+    <div class="nd-jackpot${nd.is_snowball ? ' snowball' : ''}">
+      <div class="nd-jackpot-head">
+        <span class="nd-jackpot-icon" aria-hidden="true">💰</span>
+        <span class="nd-jackpot-label">累積多寶彩金</span>
+        ${nd.is_snowball ? '<span class="nd-jackpot-badge">金多寶</span>' : ''}
+      </div>
+      <div class="nd-jackpot-amount">${jackpotAmountHtml(nd)}</div>
+      <div class="nd-jackpot-detail">${jackpotDetailHtml(nd)}</div>
+    </div>
+    <div class="nd-meta">
+      <div class="nd-meta-item"><div class="nd-meta-label">📅 攪珠日期</div><div class="nd-meta-value">${dateLabel}</div></div>
+      <div class="nd-meta-item"><div class="nd-meta-label">🔢 攪珠期數</div><div class="nd-meta-value">${nd.draw_no}</div></div>
+      <div class="nd-meta-item"><div class="nd-meta-label">🕐 攪珠時間</div><div class="nd-meta-value">${nd.draw_time}</div></div>
+    </div>
+    ${scheduleHtml}
+    <div class="nd-source">資料來源：香港賽馬會（${liveTag}）· ${formatDateTimeSafe((data.meta || {}).generated)}</div>
+  `;
+
+  startNextCountdown(nd.draw_date, nd.draw_time);
+
+  // 最佳努力即時刷新：若自上次構建後已有新一期開獎，重算下期
+  if (!_ndLiveTried) {
+    _ndLiveTried = true;
+    refreshNextDrawLive();
+  }
+}
+
+/** 將 YYYY-MM-DD + 星期 格式化為「YYYY年M月D日（星期）」 */
+function formatNextDate(dateStr, wd) {
+  if (!dateStr) return '日期待定';
+  const p = dateStr.split('-');
+  if (p.length !== 3) return dateStr;
+  return `${p[0]}年${parseInt(p[1], 10)}月${parseInt(p[2], 10)}日（${wd || ''}）`;
+}
+
+/** 渲染未來攪珠日程小列表（不含作為標題的下一期） */
+function renderNextSchedule(schedule, nextDate) {
+  if (!schedule || !schedule.length) return '';
+  const upcoming = schedule
+    .filter(s => s.date > nextDate)
+    .slice(0, 10);
+  if (!upcoming.length) return '';
+  const chips = upcoming.map(s =>
+    `<span class="nd-schedule-chip${s.snowball ? ' snowball' : ''}">${s.date}${s.snowball ? ' ❄️' : ''}</span>`
+  ).join('');
+  return `
+    <div class="nd-schedule">
+      <div class="nd-schedule-title">📆 其後攪珠日程</div>
+      <div class="nd-schedule-list">${chips}</div>
+    </div>
+  `;
+}
+
+/** 安全格式化產生時間 */
+function formatDateTimeSafe(s) {
+  if (!s) return '';
+  try { return new Date(s).toLocaleString('zh-HK'); }
+  catch (e) { return s; }
+}
+
+/** 將數值格式化為 HK$ 貨幣字串（千分位） */
+function fmtMoney(n) {
+  const v = Number(n) || 0;
+  return 'HK$ ' + v.toLocaleString('en-US');
+}
+
+/** 下期攪珠彩金金額展示（優先顯示累積多寶，否則顯示頭獎保證） */
+function jackpotAmountHtml(nd) {
+  if (!nd) return '待馬會公佈';
+  const roll = Number(nd.jackpot_rollover) || 0;
+  const g = Number(nd.jackpot_guarantee) || 0;
+  if (roll > 0) return fmtMoney(roll);
+  if (g > 0) return fmtMoney(g) + ' 起';
+  return '待馬會公佈';
+}
+
+/** 下期攪珠彩金說明 */
+function jackpotDetailHtml(nd) {
+  if (!nd) return '彩金金額以香港賽馬會公佈為準。';
+  const roll = Number(nd.jackpot_rollover) || 0;
+  const g = Number(nd.jackpot_guarantee) || 0;
+  if (roll > 0) {
+    return '上期頭獎無人中獎，多寶彩金滾存至本期，連同新一期投注一併攪出。';
+  }
+  if (nd.is_snowball) {
+    return '金多寶攪珠 — 頭獎保證派彩不少於 ' + fmtMoney(g) + '，實際彩金以攪珠當日公佈為準。';
+  }
+  if (g > 0) {
+    return '本期暫無累積多寶；頭獎保證派彩不少於 ' + fmtMoney(g) + '。';
+  }
+  return '彩金金額以香港賽馬會公佈為準。';
+}
+
+/** 啟動倒數計時（每秒更新） */
+function startNextCountdown(dateStr, timeStr) {
+  if (_ndInterval) { clearInterval(_ndInterval); _ndInterval = null; }
+  const el = document.getElementById('ndCountdown');
+  if (!el) return;
+  // 以 HKT (+08:00) 鎖定時區，避免使用者本地時區造成偏差
+  const target = new Date(`${dateStr}T${timeStr}:00+08:00`);
+  if (isNaN(target.getTime())) return;
+
+  const tick = () => {
+    const now = new Date();
+    let diff = Math.floor((target.getTime() - now.getTime()) / 1000);
+    if (diff <= 0) {
+      el.innerHTML = '<div class="nd-countdown-done">🎰 攪珠進行中 / 已截止</div>';
+      if (_ndInterval) { clearInterval(_ndInterval); _ndInterval = null; }
+      return;
+    }
+    const d = Math.floor(diff / 86400); diff -= d * 86400;
+    const h = Math.floor(diff / 3600); diff -= h * 3600;
+    const m = Math.floor(diff / 60); const s = diff - m * 60;
+    el.innerHTML = `
+      ${unit(d, '天')}
+      ${unit(h, '時')}
+      ${unit(m, '分')}
+      ${unit(s, '秒')}
+    `;
+  };
+  const unit = (n, label) =>
+    `<div class="nd-cd-unit"><div class="nd-cd-num">${String(n).padStart(2, '0')}</div><div class="nd-cd-text">${label}</div></div>`;
+  tick();
+  _ndInterval = setInterval(tick, 1000);
+}
+
+// --- 即時刷新（最佳努力；失敗時靜默回退至內嵌資料） ---
+const ND_QUERY_B64 = 'cXVlcnkgbWFya3NpeFJlc3VsdCgkbGFzdE5EcmF3OiBJbnQsICRzdGFydERhdGU6IFN0cmluZywgJGVuZERhdGU6IFN0cmluZywgJGRyYXdUeXBlOiBMb3R0ZXJ5RHJhd1R5cGUpIHsKICAgIGxvdHRlcnlEcmF3cyhsYXN0TkRyYXc6ICRsYXN0TkRyYXcsIHN0YXJ0RGF0ZTogJHN0YXJ0RGF0ZSwgZW5kRGF0ZTogJGVuZERhdGUsIGRyYXdUeXBlOiAkZHJhd1R5cGUpIHsKICAgICAgLi4ubG90dGVyeURyYXdzRnJhZ21lbnQKICAgIH0KfQoKZnJhZ21lbnQgbG90dGVyeURyYXdzRnJhZ21lbnQgb24gTG90dGVyeURyYXcgewogICAgaWQKICAgIHllYXIKICAgIG5vCiAgICBvcGVuRGF0ZQogICAgY2xvc2VEYXRlCiAgICBkcmF3RGF0ZQogICAgc3RhdHVzCiAgICBzbm93YmFsbENvZGUKICAgIHNub3diYWxsTmFtZV9lbgogICAgc25vd2JhbGxOYW1lX2NoCiAgICBsb3R0ZXJ5UG9vbCB7CiAgICAgIHNlbGwKICAgICAgc3RhdHVzCiAgICAgIHRvdGFsSW52ZXN0bWVudAogICAgICBqYWNrcG90CiAgICAgIHVuaXRCZXQKICAgICAgZXN0aW1hdGVkUHJpemUKICAgICAgZGVyaXZlZEZpcnN0UHJpemVEaXYKICAgICAgbG90dGVyeVByaXplcyB7CiAgICAgICAgdHlwZQogICAgICAgIHdpbm5pbmdVbml0CiAgICAgICAgZGl2aWRlbmQKICAgICAgfQogICAgfQogICAgZHJhd1Jlc3VsdCB7CiAgICAgIGRyYXduTm8KICAgICAgeERyYXduTm8KICAgIH0KICB9Cg==';
+const ND_QUERY_SHA = 'feba7ad77a76ad7771454b9c60f168ba01f854f3e673754110b35d19957005e9';
+const ND_EP = 'https://info.cld.hkjc.com/graphql/base/';
+
+async function fetchLatestDrawsLive() {
+  const query = atob(ND_QUERY_B64);
+  const body = JSON.stringify({
+    operationName: 'marksixResult',
+    query: query,
+    variables: { drawType: 'All', lastNDraw: 1 },
+    extensions: { persistedQuery: { version: 1, sha256Hash: ND_QUERY_SHA } },
+  });
+  const r = await fetch(ND_EP, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: body,
+  });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const d = await r.json();
+  return (d.data || {}).lotteryDraws || [];
+}
+
+/** 客戶端重算下期（與 pipline/fetch_next_draw.py 對齊） */
+function recomputeNextDrawClient(latestNo, latestDate, schedule) {
+  const future = schedule.filter(s => s.date > latestDate);
+  if (!future.length) return null;
+  const nxt = future[0];
+  const nxtDate = new Date(nxt.date + 'T00:00:00');
+  const latestD = new Date(latestDate + 'T00:00:00');
+  let nextNo;
+  const parts = (latestNo || '').split('/');
+  const yy = parseInt(parts[0], 10), nnn = parseInt(parts[1], 10);
+  if (nxtDate.getFullYear() !== latestD.getFullYear()) {
+    nextNo = String(nxtDate.getFullYear() % 100).padStart(2, '0') + '/001';
+  } else {
+    nextNo = String(yy).padStart(2, '0') + '/' + String(nnn + 1).padStart(3, '0');
+  }
+  const wd = ['日', '一', '二', '三', '四', '五', '六'][nxtDate.getDay()];
+  return {
+    draw_no: nextNo, draw_date: nxt.date, day_of_week: wd,
+    is_snowball: !!nxt.snowball,
+    snowball_name: nxt.snowball ? '金多寶攪珠' : null,
+    sales_close: '21:15', draw_time: '21:30',
+    estimated_jackpot: null,
+    jackpot_rollover: 0, jackpot_guarantee: 0,
+    status: 'ok',
+  };
+}
+
+async function refreshNextDrawLive() {
+  const data = window.NEXT_DRAW_DATA;
+  if (!data || !data.next_draw || data.next_draw.status !== 'ok') return;
+  try {
+    const draws = await fetchLatestDrawsLive();
+    if (!draws.length) return;
+    // lotteryDraws(lastNDraw) 回傳升冪，最後一筆為最新
+    const latest = draws[draws.length - 1];
+    const year = String(latest.year);
+    const no = latest.no;
+    const drawNo = String(parseInt(year, 10) % 100).padStart(2, '0') + '/' + String(no).padStart(3, '0');
+    const dd = (latest.drawDate || '').slice(0, 10);
+    const embeddedLatest = (data.meta && data.meta.latest_draw_no) || '';
+    if (embeddedLatest && drawNo <= embeddedLatest) return; // 無更新
+    const sched = (data.schedule || []).map(s => ({ date: s.date, snowball: !!s.snowball }));
+    const nd = recomputeNextDrawClient(drawNo, dd, sched);
+    if (!nd) return;
+    data.next_draw = nd;
+    data.meta = data.meta || {};
+    data.meta.latest_draw_no = drawNo;
+    data.meta.latest_draw_date = dd;
+    renderNextDraw(true);
+  } catch (e) {
+    // 靜默失敗：維持內嵌資料
+  }
 }
 
 // ==================== Module 2: History ====================
@@ -2379,6 +2648,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   initNavigation();
   initBackToTop();
+  initLatestSubTabs();
 
   // Event bindings — with null checks and backup via ensureCheckerEvents
   const btnCheck = document.getElementById('btnCheck');

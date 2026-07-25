@@ -1,0 +1,563 @@
+{
+  "meta": {
+    "generated": "2026-07-25T20:14:01",
+    "source": "hkjc_sitecore_schedule + local_verified",
+    "latest_draw_no": "26/079",
+    "latest_draw_date": "2026-07-23",
+    "schedule_years": [
+      "2025",
+      "2026"
+    ]
+  },
+  "schedule": [
+    {
+      "date": "2025-09-02",
+      "snowball": false
+    },
+    {
+      "date": "2025-09-06",
+      "snowball": true
+    },
+    {
+      "date": "2025-09-09",
+      "snowball": false
+    },
+    {
+      "date": "2025-09-11",
+      "snowball": false
+    },
+    {
+      "date": "2025-09-13",
+      "snowball": false
+    },
+    {
+      "date": "2025-09-16",
+      "snowball": false
+    },
+    {
+      "date": "2025-09-18",
+      "snowball": false
+    },
+    {
+      "date": "2025-09-20",
+      "snowball": false
+    },
+    {
+      "date": "2025-09-25",
+      "snowball": false
+    },
+    {
+      "date": "2025-09-27",
+      "snowball": false
+    },
+    {
+      "date": "2025-09-30",
+      "snowball": false
+    },
+    {
+      "date": "2025-10-06",
+      "snowball": true
+    },
+    {
+      "date": "2025-10-09",
+      "snowball": false
+    },
+    {
+      "date": "2025-10-11",
+      "snowball": false
+    },
+    {
+      "date": "2025-10-14",
+      "snowball": false
+    },
+    {
+      "date": "2025-10-16",
+      "snowball": false
+    },
+    {
+      "date": "2025-10-18",
+      "snowball": false
+    },
+    {
+      "date": "2025-10-21",
+      "snowball": false
+    },
+    {
+      "date": "2025-10-23",
+      "snowball": false
+    },
+    {
+      "date": "2025-10-25",
+      "snowball": false
+    },
+    {
+      "date": "2025-10-28",
+      "snowball": false
+    },
+    {
+      "date": "2025-11-04",
+      "snowball": true
+    },
+    {
+      "date": "2025-11-06",
+      "snowball": false
+    },
+    {
+      "date": "2025-11-08",
+      "snowball": false
+    },
+    {
+      "date": "2025-11-11",
+      "snowball": false
+    },
+    {
+      "date": "2025-11-13",
+      "snowball": false
+    },
+    {
+      "date": "2025-11-16",
+      "snowball": false
+    },
+    {
+      "date": "2025-11-18",
+      "snowball": false
+    },
+    {
+      "date": "2025-11-20",
+      "snowball": false
+    },
+    {
+      "date": "2025-11-25",
+      "snowball": true
+    },
+    {
+      "date": "2025-12-02",
+      "snowball": false
+    },
+    {
+      "date": "2025-12-06",
+      "snowball": false
+    },
+    {
+      "date": "2025-12-11",
+      "snowball": false
+    },
+    {
+      "date": "2025-12-13",
+      "snowball": false
+    },
+    {
+      "date": "2025-12-16",
+      "snowball": false
+    },
+    {
+      "date": "2025-12-18",
+      "snowball": false
+    },
+    {
+      "date": "2025-12-21",
+      "snowball": false
+    },
+    {
+      "date": "2025-12-25",
+      "snowball": false
+    },
+    {
+      "date": "2025-12-28",
+      "snowball": false
+    },
+    {
+      "date": "2026-01-03",
+      "snowball": true
+    },
+    {
+      "date": "2026-01-06",
+      "snowball": false
+    },
+    {
+      "date": "2026-01-08",
+      "snowball": false
+    },
+    {
+      "date": "2026-01-10",
+      "snowball": false
+    },
+    {
+      "date": "2026-01-13",
+      "snowball": false
+    },
+    {
+      "date": "2026-01-15",
+      "snowball": false
+    },
+    {
+      "date": "2026-01-17",
+      "snowball": false
+    },
+    {
+      "date": "2026-01-20",
+      "snowball": false
+    },
+    {
+      "date": "2026-01-22",
+      "snowball": false
+    },
+    {
+      "date": "2026-01-24",
+      "snowball": false
+    },
+    {
+      "date": "2026-01-27",
+      "snowball": false
+    },
+    {
+      "date": "2026-01-29",
+      "snowball": false
+    },
+    {
+      "date": "2026-01-31",
+      "snowball": false
+    },
+    {
+      "date": "2026-02-03",
+      "snowball": false
+    },
+    {
+      "date": "2026-02-05",
+      "snowball": false
+    },
+    {
+      "date": "2026-02-07",
+      "snowball": false
+    },
+    {
+      "date": "2026-02-10",
+      "snowball": false
+    },
+    {
+      "date": "2026-02-12",
+      "snowball": false
+    },
+    {
+      "date": "2026-02-15",
+      "snowball": false
+    },
+    {
+      "date": "2026-02-21",
+      "snowball": true
+    },
+    {
+      "date": "2026-02-24",
+      "snowball": false
+    },
+    {
+      "date": "2026-02-26",
+      "snowball": false
+    },
+    {
+      "date": "2026-02-28",
+      "snowball": false
+    },
+    {
+      "date": "2026-03-03",
+      "snowball": false
+    },
+    {
+      "date": "2026-03-05",
+      "snowball": false
+    },
+    {
+      "date": "2026-03-07",
+      "snowball": false
+    },
+    {
+      "date": "2026-03-10",
+      "snowball": false
+    },
+    {
+      "date": "2026-03-12",
+      "snowball": false
+    },
+    {
+      "date": "2026-03-17",
+      "snowball": true
+    },
+    {
+      "date": "2026-03-19",
+      "snowball": false
+    },
+    {
+      "date": "2026-03-21",
+      "snowball": false
+    },
+    {
+      "date": "2026-03-24",
+      "snowball": false
+    },
+    {
+      "date": "2026-03-26",
+      "snowball": false
+    },
+    {
+      "date": "2026-03-28",
+      "snowball": false
+    },
+    {
+      "date": "2026-03-31",
+      "snowball": false
+    },
+    {
+      "date": "2026-04-04",
+      "snowball": true
+    },
+    {
+      "date": "2026-04-07",
+      "snowball": false
+    },
+    {
+      "date": "2026-04-09",
+      "snowball": false
+    },
+    {
+      "date": "2026-04-11",
+      "snowball": false
+    },
+    {
+      "date": "2026-04-14",
+      "snowball": false
+    },
+    {
+      "date": "2026-04-16",
+      "snowball": false
+    },
+    {
+      "date": "2026-04-18",
+      "snowball": false
+    },
+    {
+      "date": "2026-04-21",
+      "snowball": false
+    },
+    {
+      "date": "2026-04-23",
+      "snowball": false
+    },
+    {
+      "date": "2026-04-25",
+      "snowball": false
+    },
+    {
+      "date": "2026-05-02",
+      "snowball": true
+    },
+    {
+      "date": "2026-05-05",
+      "snowball": false
+    },
+    {
+      "date": "2026-05-07",
+      "snowball": false
+    },
+    {
+      "date": "2026-05-10",
+      "snowball": false
+    },
+    {
+      "date": "2026-05-12",
+      "snowball": false
+    },
+    {
+      "date": "2026-05-14",
+      "snowball": false
+    },
+    {
+      "date": "2026-05-16",
+      "snowball": false
+    },
+    {
+      "date": "2026-05-19",
+      "snowball": false
+    },
+    {
+      "date": "2026-05-21",
+      "snowball": false
+    },
+    {
+      "date": "2026-05-23",
+      "snowball": false
+    },
+    {
+      "date": "2026-05-26",
+      "snowball": false
+    },
+    {
+      "date": "2026-05-28",
+      "snowball": false
+    },
+    {
+      "date": "2026-05-30",
+      "snowball": false
+    },
+    {
+      "date": "2026-06-02",
+      "snowball": false
+    },
+    {
+      "date": "2026-06-04",
+      "snowball": false
+    },
+    {
+      "date": "2026-06-06",
+      "snowball": false
+    },
+    {
+      "date": "2026-06-09",
+      "snowball": false
+    },
+    {
+      "date": "2026-06-11",
+      "snowball": false
+    },
+    {
+      "date": "2026-06-14",
+      "snowball": false
+    },
+    {
+      "date": "2026-06-18",
+      "snowball": true
+    },
+    {
+      "date": "2026-06-20",
+      "snowball": false
+    },
+    {
+      "date": "2026-06-23",
+      "snowball": false
+    },
+    {
+      "date": "2026-06-25",
+      "snowball": false
+    },
+    {
+      "date": "2026-06-28",
+      "snowball": false
+    },
+    {
+      "date": "2026-06-30",
+      "snowball": false
+    },
+    {
+      "date": "2026-07-02",
+      "snowball": false
+    },
+    {
+      "date": "2026-07-05",
+      "snowball": false
+    },
+    {
+      "date": "2026-07-07",
+      "snowball": false
+    },
+    {
+      "date": "2026-07-09",
+      "snowball": false
+    },
+    {
+      "date": "2026-07-11",
+      "snowball": false
+    },
+    {
+      "date": "2026-07-14",
+      "snowball": false
+    },
+    {
+      "date": "2026-07-16",
+      "snowball": false
+    },
+    {
+      "date": "2026-07-21",
+      "snowball": true
+    },
+    {
+      "date": "2026-07-23",
+      "snowball": false
+    },
+    {
+      "date": "2026-07-25",
+      "snowball": false
+    },
+    {
+      "date": "2026-07-28",
+      "snowball": false
+    },
+    {
+      "date": "2026-07-30",
+      "snowball": false
+    },
+    {
+      "date": "2026-08-01",
+      "snowball": false
+    },
+    {
+      "date": "2026-08-04",
+      "snowball": false
+    },
+    {
+      "date": "2026-08-06",
+      "snowball": false
+    },
+    {
+      "date": "2026-08-08",
+      "snowball": false
+    },
+    {
+      "date": "2026-08-11",
+      "snowball": false
+    },
+    {
+      "date": "2026-08-13",
+      "snowball": false
+    },
+    {
+      "date": "2026-08-15",
+      "snowball": false
+    },
+    {
+      "date": "2026-08-18",
+      "snowball": false
+    },
+    {
+      "date": "2026-08-20",
+      "snowball": false
+    },
+    {
+      "date": "2026-08-22",
+      "snowball": false
+    },
+    {
+      "date": "2026-08-25",
+      "snowball": false
+    },
+    {
+      "date": "2026-08-27",
+      "snowball": false
+    },
+    {
+      "date": "2026-08-29",
+      "snowball": false
+    }
+  ],
+  "next_draw": {
+    "draw_no": "26/080",
+    "draw_date": "2026-07-25",
+    "day_of_week": "六",
+    "is_snowball": false,
+    "snowball_name": null,
+    "sales_close": "21:15",
+    "draw_time": "21:30",
+    "estimated_jackpot": null,
+    "jackpot_rollover": 0,
+    "jackpot_guarantee": 8000000,
+    "status": "ok"
+  }
+}
