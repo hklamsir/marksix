@@ -112,8 +112,8 @@ def get_day_of_week(d: date) -> str:
 # ---------------------------------------------------------------------------
 # 1) 讀取最新一期
 # ---------------------------------------------------------------------------
-def load_latest_draw() -> tuple[str, str, dict]:
-    """回傳 (最新期數 'YY/NNN', 開獎日期 'YYYY-MM-DD', 最新一期 _pool 獎金池)。"""
+def load_latest_draw() -> tuple[str, str, dict, dict]:
+    """回傳 (最新期數, 開獎日期, 最新一期 完整prizes字典, _pool 獎金池)。"""
     if not VERIFIED_JSON.exists():
         raise RuntimeError(f"找不到 {VERIFIED_JSON}，請先執行 daily_update.py")
     with VERIFIED_JSON.open("r", encoding="utf-8") as f:
@@ -123,8 +123,9 @@ def load_latest_draw() -> tuple[str, str, dict]:
         raise RuntimeError("draw_results_verified.json 無開獎資料")
     # 期數字串 "YY/NNN" 在同為兩位年 + 三位序號(零填充)下,字典序即時間序
     latest = max(draws, key=lambda x: x.get("draw_no", ""))
-    pool = (latest.get("prizes") or {}).get("_pool") or {}
-    return latest["draw_no"], (latest.get("date") or "")[:10], pool
+    prizes = latest.get("prizes") or {}
+    pool = prizes.get("_pool") or {}
+    return latest["draw_no"], (latest.get("date") or "")[:10], prizes, pool
 
 
 # ---------------------------------------------------------------------------
@@ -207,8 +208,18 @@ def gzip_decompress(raw: bytes) -> bytes:
 # ---------------------------------------------------------------------------
 def compute_next_draw(latest_no: str, latest_date: str,
                       schedule: list[dict],
-                      latest_pool: dict | None = None) -> dict:
-    """根據最新期數/日期與日程表,計算下期攪珠。"""
+                      latest_pool: dict | None = None,
+                      latest_prizes: dict | None = None) -> dict:
+    """根據最新期數/日期與日程表,計算下期攪珠。
+
+    多寶彩金邏輯（按 HKJC 獎券規例 2024-05-21 生效之規則）：
+      1. 獎金基金 = 總投注額 × 54%
+      2. 固定獎金 = 第四至七組 winners × 每注派彩
+      3. 金多寶扣數 SD = 9%×[PF-FP-55%×(60%×PF-FP)] + 55%×(60%×PF-FP)
+      4. 頭獎池 = 45% × (PF - FP - SD)
+      5. 若上期頭獎 winners == 0（無人中頭獎），頭獎池整筆滾存至下期。
+      6. 頭獎保證最少 HK$8,000,000（derived_first_prize_div）。
+    """
     # 最新一期開獎日（用於決定「下一個」攪珠日）
     try:
         latest_d = date.fromisoformat(latest_date)
@@ -236,17 +247,54 @@ def compute_next_draw(latest_no: str, latest_date: str,
     else:
         next_no = f"{yy_i:02d}/{nnn_i + 1:03d}"
 
-    # 多寶彩金：上期未派發的頭獎（_pool.jackpot 滾存）即為下期累積多寶；
-    # 若無滾存，則以頭獎保證派彩（_pool.derived_first_prize_div）作為參考基準。
+    # ---- 多寶彩金（累積滾存）計算 ----
     pool = latest_pool or {}
+    prizes = latest_prizes or {}
     try:
-        jackpot_rollover = int(pool.get("jackpot") or 0)
+        total_investment = int(pool.get("total_investment") or 0)
     except (ValueError, TypeError):
-        jackpot_rollover = 0
+        total_investment = 0
+
+    # 獎金基金 = 總投注額 × 54%
+    pf = total_investment * 0.54  # prize fund
+
+    # 固定獎金（第四至第七組）
+    fp = 0.0  # fixed prizes total
+    for tier in ("四獎", "五獎", "六獎", "七獎"):
+        t = prizes.get(tier) or {}
+        w = int(t.get("winners") or 0)
+        a = int(t.get("amount") or 0)
+        fp += w * a
+
+    # 金多寶扣數（Snowball Deduction）
+    # SD = 9%×[PF-FP-55%×(60%×PF-FP)] + 55%×(60%×PF-FP)
+    # 化簡：SD = 0.3903×PF - 0.5905×FP
+    inner = 0.6 * pf - fp
+    sd = 0.09 * (pf - fp - 0.55 * inner) + 0.55 * inner
+
+    # 頭獎池 = 45% × (獎金基金 − 固定獎金 − 扣數)
+    remaining = pf - fp - sd
+    head_pool_computed = max(0.0, remaining) * 0.45
+
+    # 頭獎保證最少 derived_first_prize_div（常為 8,000,000）
     try:
         jackpot_guarantee = int(pool.get("derived_first_prize_div") or 8000000)
     except (ValueError, TypeError):
         jackpot_guarantee = 8000000
+
+    # 是否頭獎無人命中 → 滾存
+    head_prize = prizes.get("頭獎") or {}
+    head_winners = int(head_prize.get("winners") or 0)
+    is_rollover = (head_winners == 0)
+
+    # 若頭獎無人命中，實際頭獎基金不少於保證額（HKJC 規定），
+    # 該保證額亦應滾存至下期多寶彩池。
+    if is_rollover:
+        head_pool = max(float(jackpot_guarantee), head_pool_computed)
+    else:
+        head_pool = head_pool_computed
+
+    jackpot_rollover = int(head_pool) if (is_rollover and head_pool > 0) else 0
 
     return {
         "draw_no": next_no,
@@ -259,6 +307,7 @@ def compute_next_draw(latest_no: str, latest_date: str,
         "estimated_jackpot": None,
         "jackpot_rollover": jackpot_rollover,
         "jackpot_guarantee": jackpot_guarantee,
+        "jackpot_is_rollover": is_rollover,
         "status": "ok",
     }
 
@@ -276,7 +325,7 @@ def main() -> None:
     log("=" * 60)
 
     # Step 1: 最新一期
-    latest_no, latest_date, latest_pool = load_latest_draw()
+    latest_no, latest_date, latest_prizes, latest_pool = load_latest_draw()
     log(f"最新一期: {latest_no} ({latest_date})")
 
     # Step 2: 日程表
@@ -301,6 +350,7 @@ def main() -> None:
                 "sales_close": SALES_CLOSE, "draw_time": DRAW_TIME,
                 "estimated_jackpot": None,
                 "jackpot_rollover": 0, "jackpot_guarantee": 8000000,
+                "jackpot_is_rollover": False,
                 "status": "unavailable",
             },
         }
@@ -313,7 +363,8 @@ def main() -> None:
         return
 
     # Step 3: 計算下期
-    next_draw = compute_next_draw(latest_no, latest_date, schedule, latest_pool)
+    next_draw = compute_next_draw(latest_no, latest_date, schedule,
+                                  latest_pool, latest_prizes)
     log(f"下期攪珠: 第 {next_draw['draw_no']} 期, {next_draw['draw_date']} "
         f"({next_draw['day_of_week']})"
         f"{' [金多寶]' if next_draw['is_snowball'] else ''}")

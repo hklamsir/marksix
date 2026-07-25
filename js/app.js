@@ -509,23 +509,32 @@ function fmtMoney(n) {
   return 'HK$ ' + v.toLocaleString('en-US');
 }
 
-/** 下期攪珠彩金金額展示（優先顯示累積多寶，否則顯示頭獎保證） */
+/** 下期攪珠彩金金額展示
+ *  優先顯示已計算的滾存金額；若已知上期頭獎無人命中但金額無法計算，
+ *  則顯示「有待公佈」；若上期頭獎有人命中（無滾存），則顯示頭獎保證。 */
 function jackpotAmountHtml(nd) {
   if (!nd) return '待馬會公佈';
   const roll = Number(nd.jackpot_rollover) || 0;
-  const g = Number(nd.jackpot_guarantee) || 0;
+  const isRoll = !!nd.jackpot_is_rollover;
   if (roll > 0) return fmtMoney(roll);
+  if (isRoll) return '有待公佈';
+  const g = Number(nd.jackpot_guarantee) || 0;
   if (g > 0) return fmtMoney(g) + ' 起';
   return '待馬會公佈';
 }
 
-/** 下期攪珠彩金說明 */
+/** 下期攪珠彩金說明（按 HKJC 獎券規例） */
 function jackpotDetailHtml(nd) {
   if (!nd) return '彩金金額以香港賽馬會公佈為準。';
   const roll = Number(nd.jackpot_rollover) || 0;
+  const isRoll = !!nd.jackpot_is_rollover;
   const g = Number(nd.jackpot_guarantee) || 0;
   if (roll > 0) {
-    return '上期頭獎無人中獎，多寶彩金滾存至本期，連同新一期投注一併攪出。';
+    const m = (roll / 1e6).toFixed(1).replace(/\.0$/, '');
+    return '上期頭獎無人中獎，未派發頭獎彩金（約 HK$ ' + m + 'M）已全數滾存至本期「多寶彩池」，連同本期新投注一併攪出。';
+  }
+  if (isRoll) {
+    return '上期頭獎無人中獎，未派發頭獎彩金已全數滾存至本期「多寶彩池」。（實際金額以香港賽馬會公佈為準。）';
   }
   if (nd.is_snowball) {
     return '金多寶攪珠 — 頭獎保證派彩不少於 ' + fmtMoney(g) + '，實際彩金以攪珠當日公佈為準。';
@@ -615,6 +624,7 @@ function recomputeNextDrawClient(latestNo, latestDate, schedule) {
     sales_close: '21:15', draw_time: '21:30',
     estimated_jackpot: null,
     jackpot_rollover: 0, jackpot_guarantee: 0,
+    jackpot_is_rollover: false,
     status: 'ok',
   };
 }
