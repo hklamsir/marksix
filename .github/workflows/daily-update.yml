@@ -2,8 +2,10 @@ name: 每日自動更新六合彩資料
 
 on:
   schedule:
-    # 每日 23:00 HKT = 15:00 UTC
-    - cron: "0 15 * * *"
+    # 每日 21:45 HKT = 13:45 UTC
+    - cron: "45 13 * * *"
+    # 每日 22:30 HKT = 14:30 UTC
+    - cron: "30 14 * * *"
   # 允許手動觸發（方便測試）
   workflow_dispatch:
 
@@ -87,7 +89,7 @@ jobs:
           echo "--- 執行摘要 ---"
           echo "觸發方式: ${{ github.event_name }}"
           echo "執行時間: $(date '+%Y-%m-%d %H:%M:%S HKT')"
-          echo "排程 cron: 0 15 * * * (UTC) = 每日 23:00 HKT"
+          echo "排程 cron: 45 13 * * * (UTC) = 每日 21:45 HKT；30 14 * * * (UTC) = 每日 22:30 HKT"
           echo "資料變更: ${{ steps.diff.outputs.changed || 'N/A' }}"
           if [ "${{ job.status }}" = "success" ]; then
             echo "狀態: ✓ 成功"

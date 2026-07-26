@@ -14,6 +14,7 @@
 - [資料更新管線](#資料更新管線)
 - [部署到 GitHub Pages](#部署到-github-pages)
 - [貢獻指南](#貢獻指南)
+- [測試](#測試)
 - [授權資訊](#授權資訊)
 - [免責聲明](#免責聲明)
 
@@ -82,7 +83,7 @@
 | 項目 | 說明 |
 | --- | --- |
 | 資料管線 | Python 3.12+ 腳本（標準函式庫 + `openpyxl`） |
-| 自動更新 | GitHub Actions（每日 23:00 HKT 自動抓取最新資料並提交） |
+| 自動更新 | GitHub Actions（每日 21:45 與 22:30 HKT 自動抓取最新資料並提交） |
 | 外部依賴 | HKJC 官方 GraphQL：`https://info.cld.hkjc.com/graphql/base/` |
 
 ### 環境需求
@@ -92,6 +93,7 @@
 | 僅瀏覽網站 | 一個現代瀏覽器即可（**無需安裝任何東西**） |
 | 本機執行開發伺服器 | 任意可跑靜態檔案的 HTTP server（如 Python 內建 `http.server`） |
 | 執行資料管線 / 自動更新 | Python 3.12 或以上 |
+| 執行中獎比對測試套件 | Node.js（任意現代版本，僅用標準函式庫） |
 
 ---
 
@@ -136,7 +138,7 @@ pip install -r requirements.txt
 
 網站頂部為導覽列，包含七個功能頁籤，點擊即可切換：
 
-1. **最新結果** — 開啟即顯示最近一期開獎與派彩明細。
+1. **最新結果** — 開啟即顯示最近一期開獎與派彩明細；頁面底部設有「最新開獎結果」與「下期攪珠」兩個子分頁可切換，切換時畫面會自動平滑捲回頁頂。
 2. **歷史記錄** — 在搜尋框輸入期數（如 `26/077`）或日期（如 `2026-07-16`）快速定位；下拉選單可篩選年份；點擊表頭欄位可排序。
 3. **玩法指南** — 靜態說明頁面，介紹各種投注方式與中獎規則。
 4. **中獎比對** — 點選 6 個號碼後按「比對中獎」，系統會與最新開獎結果比對並顯示中獎等級。
@@ -204,7 +206,7 @@ python pipline/build_data_js.py --check
 
 ### 自動化更新（GitHub Actions）
 
-`.github/workflows/daily-update.yml` 會在**每日 23:00 HKT（UTC 15:00）**自動執行 `daily_update.py`：
+`.github/workflows/daily-update.yml` 會在**每日 21:45 與 22:30 HKT（UTC 13:45 與 14:30）**自動執行 `daily_update.py`：
 
 - 僅抓取近 30 天的開獎資料，並以期數（`draw_no`）去重，安全冪等。
 - 僅更新 `data/draw_results_verified.json` 與 `data/data.js`（49 號碼時代）；1976–2002 歷史資料為靜態，不更新。
@@ -249,6 +251,33 @@ python pipline/build_data_js.py --check
 - ❗ **請勿手動編輯 `data/data.js`** —— 它是自動生成的，請改動對應的 JSON 後執行 `build_data_js.py`。
 - 資料管線腳本僅依賴 Python 標準函式庫與 `openpyxl`，請勿引入額重依賴。
 - 提交前請確認網站在瀏覽器中正常運作（含手機版排版）。
+
+---
+
+## 測試
+
+本專案包含一套針對**中獎比對系統（複式／膽拖）**的回歸測試套件，位於 `tests/` 目錄。測試透過對比「系統公式路徑（`runCheck`）」與「獨立暴力列舉（`bruteForce`，真值）」的結果，驗證超幾何分布公式與特別號碼拆分邏輯的正確性（非循環論證）。
+
+### 檔案說明
+
+| 檔案 | 說明 |
+| --- | --- |
+| `tests/winning_checker_tests.js` | 測試執行器，內含 37 個案例（複式 12 / 膽拖 16 / 邊界 4 / 異常 5） |
+| `tests/checker_core.js` | 從 `js/app.js` 抽取的中獎計算核心（`combination` / 分布 / 獎級判定 / 獎金），供測試在 Node 環境獨立引用 |
+| `tests/winning_checker_testcases.md` | 人類可讀的測試案例表與獎級覆蓋矩陣（執行後生成） |
+| `tests/winning_checker_report.json` | 機器可讀的測試結果報告（執行後生成） |
+
+### 執行方式
+
+測試僅依賴 Node.js 標準函式庫，無須 `npm install`：
+
+```bash
+node tests/winning_checker_tests.js
+```
+
+執行成功會於終端輸出每個案例的斷言結果，並重新生成 `winning_checker_testcases.md` 與 `winning_checker_report.json`。目前 37/37 案例全數通過，涵蓋複式全獎級、膽拖（特別號在膽／在腳）、邊界與異常輸入。
+
+> ⚠️ 注意：`tests/checker_core.js` 是 `js/app.js` 中獎邏輯的**快照副本**。若你修改了 `js/app.js` 的中獎計算，請同步更新 `checker_core.js` 後再跑測試，否則測試將無法反映最新邏輯。
 
 ---
 
