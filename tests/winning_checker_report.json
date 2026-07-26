@@ -1,0 +1,1418 @@
+{
+  "generatedAt": "2026-07-26T09:34:26.897Z",
+  "summary": {
+    "total": 37,
+    "pass": 37,
+    "fail": 0
+  },
+  "coverage": {
+    "頭獎": [
+      "M-01",
+      "M-02",
+      "M-08",
+      "M-09",
+      "M-12",
+      "B-01",
+      "B-05",
+      "B-08",
+      "B-10",
+      "B-11",
+      "B-12",
+      "E-02",
+      "E-03",
+      "E-04",
+      "A-03",
+      "A-05"
+    ],
+    "二獎": [
+      "M-01",
+      "M-03",
+      "M-08",
+      "M-09",
+      "M-10",
+      "B-01",
+      "B-05",
+      "B-08",
+      "B-10",
+      "B-11",
+      "A-01"
+    ],
+    "三獎": [
+      "M-02",
+      "M-03",
+      "M-08",
+      "M-09",
+      "M-10",
+      "M-12",
+      "B-06",
+      "B-13",
+      "B-16",
+      "E-04",
+      "A-01"
+    ],
+    "四獎": [
+      "M-03",
+      "M-08",
+      "M-09",
+      "M-10",
+      "B-03",
+      "B-04",
+      "B-16",
+      "A-01"
+    ],
+    "五獎": [
+      "M-02",
+      "M-04",
+      "M-08",
+      "M-10",
+      "M-12",
+      "B-02",
+      "B-04",
+      "B-06",
+      "B-07",
+      "B-13",
+      "B-15"
+    ],
+    "六獎": [
+      "M-05",
+      "M-08",
+      "M-10",
+      "B-04",
+      "B-14"
+    ],
+    "七獎": [
+      "M-04",
+      "M-05",
+      "M-08",
+      "M-10",
+      "M-11",
+      "M-12",
+      "B-09",
+      "B-15"
+    ],
+    "未中獎": [
+      "M-06",
+      "M-07"
+    ]
+  },
+  "results": [
+    {
+      "id": "M-01",
+      "cat": "複式-完全命中(含特別號碼)",
+      "desc": "7 個號碼含全部 6 個正選 + 特別號碼：驗證 頭獎/二獎 拆分",
+      "betType": "multiple",
+      "numbers": "池[1,2,3,4,5,6,7]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "expectedTotalUnits": 7,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "formulaCounts": {
+        "二獎": 6,
+        "頭獎": 1
+      },
+      "formulaTotalUnits": 7,
+      "formulaTotalAmount": 25000000,
+      "bruteTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "bruteTotalAmount": 25000000,
+      "checks": [
+        "PASS: 總注數 = 7",
+        "PASS: 獎級集合 = [頭獎,二獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "M-02",
+      "cat": "複式-完全命中(不含特別)",
+      "desc": "8 個號碼含全部 6 正選但不含特別：頭獎+三獎+五獎",
+      "betType": "multiple",
+      "numbers": "池[1,2,3,4,5,6,8,9]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎",
+        "三獎",
+        "五獎"
+      ],
+      "expectedTotalUnits": 28,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "頭獎",
+        "三獎",
+        "五獎"
+      ],
+      "formulaCounts": {
+        "頭獎": 1,
+        "三獎": 12,
+        "五獎": 15
+      },
+      "formulaTotalUnits": 28,
+      "formulaTotalAmount": 17089600,
+      "bruteTiers": [
+        "頭獎",
+        "三獎",
+        "五獎"
+      ],
+      "bruteTotalAmount": 17089600,
+      "checks": [
+        "PASS: 總注數 = 28",
+        "PASS: 獎級集合 = [頭獎,三獎,五獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "M-03",
+      "cat": "複式-部分命中(5正選+特別)",
+      "desc": "7 碼含 5 正選 + 特別：二獎+三獎+四獎 交叉",
+      "betType": "multiple",
+      "numbers": "池[1,2,3,4,5,8,7]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "二獎",
+        "三獎",
+        "四獎"
+      ],
+      "expectedTotalUnits": 7,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "二獎",
+        "三獎",
+        "四獎"
+      ],
+      "formulaCounts": {
+        "二獎": 1,
+        "四獎": 5,
+        "三獎": 1
+      },
+      "formulaTotalUnits": 7,
+      "formulaTotalAmount": 1638000,
+      "bruteTiers": [
+        "二獎",
+        "三獎",
+        "四獎"
+      ],
+      "bruteTotalAmount": 1638000,
+      "checks": [
+        "PASS: 總注數 = 7",
+        "PASS: 獎級集合 = [二獎,三獎,四獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "M-04",
+      "cat": "複式-部分命中(4正選)",
+      "desc": "9 碼含 4 正選、無特別：五獎+七獎",
+      "betType": "multiple",
+      "numbers": "池[1,2,3,4,10,11,12,13,14]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "五獎",
+        "七獎"
+      ],
+      "expectedTotalUnits": 84,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "五獎",
+        "七獎"
+      ],
+      "formulaCounts": {
+        "五獎": 10,
+        "七獎": 40
+      },
+      "formulaTotalUnits": 84,
+      "formulaTotalAmount": 8000,
+      "bruteTiers": [
+        "五獎",
+        "七獎"
+      ],
+      "bruteTotalAmount": 8000,
+      "checks": [
+        "PASS: 總注數 = 84",
+        "PASS: 獎級集合 = [五獎,七獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "M-05",
+      "cat": "複式-部分命中(3正選+特別)",
+      "desc": "9 碼含 3 正選 + 特別：六獎+七獎",
+      "betType": "multiple",
+      "numbers": "池[1,2,3,10,11,12,13,14,7]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "六獎",
+        "七獎"
+      ],
+      "expectedTotalUnits": 84,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "六獎",
+        "七獎"
+      ],
+      "formulaCounts": {
+        "六獎": 10,
+        "七獎": 10
+      },
+      "formulaTotalUnits": 84,
+      "formulaTotalAmount": 3600,
+      "bruteTiers": [
+        "六獎",
+        "七獎"
+      ],
+      "bruteTotalAmount": 3600,
+      "checks": [
+        "PASS: 總注數 = 84",
+        "PASS: 獎級集合 = [六獎,七獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "M-06",
+      "cat": "複式-完全未命中",
+      "desc": "10 碼全落在非開獎號：未中獎",
+      "betType": "multiple",
+      "numbers": "池[8,9,10,11,12,13,14,15,16,17]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [],
+      "expectedTotalUnits": 210,
+      "error": false,
+      "note": "",
+      "formulaTiers": [],
+      "formulaCounts": {},
+      "formulaTotalUnits": 210,
+      "formulaTotalAmount": 0,
+      "bruteTiers": [],
+      "bruteTotalAmount": 0,
+      "checks": [
+        "PASS: 總注數 = 210",
+        "PASS: 獎級集合 = []",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "M-07",
+      "cat": "複式-低於門檻(中2個)",
+      "desc": "10 碼僅中 2 正選、無特別：未達派彩門檻",
+      "betType": "multiple",
+      "numbers": "池[1,2,11,12,13,14,15,16,17,18]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [],
+      "expectedTotalUnits": 210,
+      "error": false,
+      "note": "",
+      "formulaTiers": [],
+      "formulaCounts": {},
+      "formulaTotalUnits": 210,
+      "formulaTotalAmount": 0,
+      "bruteTiers": [],
+      "bruteTotalAmount": 0,
+      "checks": [
+        "PASS: 總注數 = 210",
+        "PASS: 獎級集合 = []",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "M-08",
+      "cat": "複式-全獎級覆蓋",
+      "desc": "10 碼含 6 正選 + 特別 + 3 雜碼：單案例覆蓋頭~七獎全部 7 級",
+      "betType": "multiple",
+      "numbers": "池[1,2,3,4,5,6,7,8,9,10]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎",
+        "二獎",
+        "三獎",
+        "四獎",
+        "五獎",
+        "六獎",
+        "七獎"
+      ],
+      "expectedTotalUnits": 210,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "頭獎",
+        "二獎",
+        "三獎",
+        "四獎",
+        "五獎",
+        "六獎",
+        "七獎"
+      ],
+      "formulaCounts": {
+        "二獎": 6,
+        "四獎": 45,
+        "六獎": 60,
+        "頭獎": 1,
+        "三獎": 18,
+        "五獎": 45,
+        "七獎": 20
+      },
+      "formulaTotalUnits": 210,
+      "formulaTotalAmount": 27100800,
+      "bruteTiers": [
+        "頭獎",
+        "二獎",
+        "三獎",
+        "四獎",
+        "五獎",
+        "六獎",
+        "七獎"
+      ],
+      "bruteTotalAmount": 27100800,
+      "checks": [
+        "PASS: 總注數 = 210",
+        "PASS: 獎級集合 = [頭獎,二獎,三獎,四獎,五獎,六獎,七獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "M-09",
+      "cat": "複式-8碼含特別",
+      "desc": "8 碼含 6 正選 + 特別 + 1 雜：頭/二/三/四獎",
+      "betType": "multiple",
+      "numbers": "池[1,2,3,4,5,6,7,20]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎",
+        "二獎",
+        "三獎",
+        "四獎"
+      ],
+      "expectedTotalUnits": 28,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "頭獎",
+        "二獎",
+        "三獎",
+        "四獎"
+      ],
+      "formulaCounts": {
+        "二獎": 6,
+        "四獎": 15,
+        "頭獎": 1,
+        "三獎": 6
+      },
+      "formulaTotalUnits": 28,
+      "formulaTotalAmount": 25684000,
+      "bruteTiers": [
+        "頭獎",
+        "二獎",
+        "三獎",
+        "四獎"
+      ],
+      "bruteTotalAmount": 25684000,
+      "checks": [
+        "PASS: 總注數 = 28",
+        "PASS: 獎級集合 = [頭獎,二獎,三獎,四獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "M-10",
+      "cat": "複式-9碼含特別(5正選)",
+      "desc": "9 碼含 5 正選 + 特別 + 3 雜：二~七獎(缺頭獎)",
+      "betType": "multiple",
+      "numbers": "池[1,2,3,4,5,8,9,7,10]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "二獎",
+        "三獎",
+        "四獎",
+        "五獎",
+        "六獎",
+        "七獎"
+      ],
+      "expectedTotalUnits": 84,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "二獎",
+        "三獎",
+        "四獎",
+        "五獎",
+        "六獎",
+        "七獎"
+      ],
+      "formulaCounts": {
+        "二獎": 1,
+        "四獎": 15,
+        "六獎": 30,
+        "三獎": 3,
+        "五獎": 15,
+        "七獎": 10
+      },
+      "formulaTotalUnits": 84,
+      "formulaTotalAmount": 1933600,
+      "bruteTiers": [
+        "二獎",
+        "三獎",
+        "四獎",
+        "五獎",
+        "六獎",
+        "七獎"
+      ],
+      "bruteTotalAmount": 1933600,
+      "checks": [
+        "PASS: 總注數 = 84",
+        "PASS: 獎級集合 = [二獎,三獎,四獎,五獎,六獎,七獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "M-11",
+      "cat": "複式-大池低命中",
+      "desc": "11 碼僅中 3 正選、無特別：僅七獎",
+      "betType": "multiple",
+      "numbers": "池[1,2,3,11,12,13,14,15,16,17,18]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "七獎"
+      ],
+      "expectedTotalUnits": 462,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "七獎"
+      ],
+      "formulaCounts": {
+        "七獎": 56
+      },
+      "formulaTotalUnits": 462,
+      "formulaTotalAmount": 2240,
+      "bruteTiers": [
+        "七獎"
+      ],
+      "bruteTotalAmount": 2240,
+      "checks": [
+        "PASS: 總注數 = 462",
+        "PASS: 獎級集合 = [七獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "M-12",
+      "cat": "複式-12碼完全命中",
+      "desc": "12 碼含 6 正選 + 6 雜、無特別：頭/三/五/七獎",
+      "betType": "multiple",
+      "numbers": "池[1,2,3,4,5,6,8,9,10,11,12,13]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎",
+        "三獎",
+        "五獎",
+        "七獎"
+      ],
+      "expectedTotalUnits": 924,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "頭獎",
+        "三獎",
+        "五獎",
+        "七獎"
+      ],
+      "formulaCounts": {
+        "頭獎": 1,
+        "三獎": 36,
+        "五獎": 225,
+        "七獎": 400
+      },
+      "formulaTotalUnits": 924,
+      "formulaTotalAmount": 19400000,
+      "bruteTiers": [
+        "頭獎",
+        "三獎",
+        "五獎",
+        "七獎"
+      ],
+      "bruteTotalAmount": 19400000,
+      "checks": [
+        "PASS: 總注數 = 924",
+        "PASS: 獎級集合 = [頭獎,三獎,五獎,七獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-01",
+      "cat": "膽拖-單膽(全中)+腳含全正選+特別",
+      "desc": "1 膽[1]全中；5 腳含餘 5 正選 + 特別：頭獎+二獎",
+      "betType": "banker",
+      "numbers": "膽[1] + 腳[2,3,4,5,6,7]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "expectedTotalUnits": 6,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "formulaCounts": {
+        "二獎": 5,
+        "頭獎": 1
+      },
+      "formulaTotalUnits": 6,
+      "formulaTotalAmount": 23500000,
+      "bruteTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "bruteTotalAmount": 23500000,
+      "checks": [
+        "PASS: 總注數 = 6",
+        "PASS: 獎級集合 = [頭獎,二獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-02",
+      "cat": "膽拖-單膽(全中)+腳部分中(無特別)",
+      "desc": "1 膽[1]；5 腳含 3 正選 + 2 雜、無特別：五獎",
+      "betType": "banker",
+      "numbers": "膽[1] + 腳[2,3,4,10,11]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "五獎"
+      ],
+      "expectedTotalUnits": 1,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "五獎"
+      ],
+      "formulaCounts": {
+        "五獎": 1
+      },
+      "formulaTotalUnits": 1,
+      "formulaTotalAmount": 640,
+      "bruteTiers": [
+        "五獎"
+      ],
+      "bruteTotalAmount": 640,
+      "checks": [
+        "PASS: 總注數 = 1",
+        "PASS: 獎級集合 = [五獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-03",
+      "cat": "膽拖-單膽(全中)+腳含特別",
+      "desc": "1 膽[1]；5 腳含 3 正選 + 特別 + 1 雜：四獎",
+      "betType": "banker",
+      "numbers": "膽[1] + 腳[2,3,4,7,10]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "四獎"
+      ],
+      "expectedTotalUnits": 1,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "四獎"
+      ],
+      "formulaCounts": {
+        "四獎": 1
+      },
+      "formulaTotalUnits": 1,
+      "formulaTotalAmount": 9600,
+      "bruteTiers": [
+        "四獎"
+      ],
+      "bruteTotalAmount": 9600,
+      "checks": [
+        "PASS: 總注數 = 1",
+        "PASS: 獎級集合 = [四獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-04",
+      "cat": "膽拖-單膽(全中)+腳含特別+多雜",
+      "desc": "1 膽[1]；6 腳含 3 正選 + 特別 + 2 雜：四/五/六獎",
+      "betType": "banker",
+      "numbers": "膽[1] + 腳[2,3,4,7,20,21]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "四獎",
+        "五獎",
+        "六獎"
+      ],
+      "expectedTotalUnits": 6,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "四獎",
+        "五獎",
+        "六獎"
+      ],
+      "formulaCounts": {
+        "四獎": 2,
+        "六獎": 3,
+        "五獎": 1
+      },
+      "formulaTotalUnits": 6,
+      "formulaTotalAmount": 20800,
+      "bruteTiers": [
+        "四獎",
+        "五獎",
+        "六獎"
+      ],
+      "bruteTotalAmount": 20800,
+      "checks": [
+        "PASS: 總注數 = 6",
+        "PASS: 獎級集合 = [四獎,五獎,六獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-05",
+      "cat": "膽拖-雙膽(全中)+腳含全正選+特別",
+      "desc": "2 膽[1,2]全中；5 腳含餘 4 正選 + 特別：頭獎+二獎",
+      "betType": "banker",
+      "numbers": "膽[1,2] + 腳[3,4,5,6,7]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "expectedTotalUnits": 5,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "formulaCounts": {
+        "二獎": 4,
+        "頭獎": 1
+      },
+      "formulaTotalUnits": 5,
+      "formulaTotalAmount": 22000000,
+      "bruteTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "bruteTotalAmount": 22000000,
+      "checks": [
+        "PASS: 總注數 = 5",
+        "PASS: 獎級集合 = [頭獎,二獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-06",
+      "cat": "膽拖-雙膽(1中1不中)+腳全正選",
+      "desc": "2 膽[1,9]；6 腳含 5 正選、無特別：三獎+五獎",
+      "betType": "banker",
+      "numbers": "膽[1,9] + 腳[2,3,4,5,6,10]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "三獎",
+        "五獎"
+      ],
+      "expectedTotalUnits": 15,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "三獎",
+        "五獎"
+      ],
+      "formulaCounts": {
+        "三獎": 5,
+        "五獎": 10
+      },
+      "formulaTotalUnits": 15,
+      "formulaTotalAmount": 456400,
+      "bruteTiers": [
+        "三獎",
+        "五獎"
+      ],
+      "bruteTotalAmount": 456400,
+      "checks": [
+        "PASS: 總注數 = 15",
+        "PASS: 獎級集合 = [三獎,五獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-07",
+      "cat": "膽拖-雙膽(全不中)+腳全正選",
+      "desc": "2 膽[8,9]全不中；6 腳含 6 正選：每注皆五獎",
+      "betType": "banker",
+      "numbers": "膽[8,9] + 腳[1,2,3,4,5,6]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "五獎"
+      ],
+      "expectedTotalUnits": 15,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "五獎"
+      ],
+      "formulaCounts": {
+        "五獎": 15
+      },
+      "formulaTotalUnits": 15,
+      "formulaTotalAmount": 9600,
+      "bruteTiers": [
+        "五獎"
+      ],
+      "bruteTotalAmount": 9600,
+      "checks": [
+        "PASS: 總注數 = 15",
+        "PASS: 獎級集合 = [五獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-08",
+      "cat": "膽拖-三膽(全中)+腳含全正選+特別",
+      "desc": "3 膽[1,2,3]全中；4 腳含餘 3 正選 + 特別：頭獎+二獎",
+      "betType": "banker",
+      "numbers": "膽[1,2,3] + 腳[4,5,6,7]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "expectedTotalUnits": 4,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "formulaCounts": {
+        "二獎": 3,
+        "頭獎": 1
+      },
+      "formulaTotalUnits": 4,
+      "formulaTotalAmount": 20500000,
+      "bruteTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "bruteTotalAmount": 20500000,
+      "checks": [
+        "PASS: 總注數 = 4",
+        "PASS: 獎級集合 = [頭獎,二獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-09",
+      "cat": "膽拖-三膽(全不中)+腳全正選",
+      "desc": "3 膽[8,9,10]全不中；5 腳含 5 正選：每注皆七獎",
+      "betType": "banker",
+      "numbers": "膽[8,9,10] + 腳[1,2,3,4,5]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "七獎"
+      ],
+      "expectedTotalUnits": 10,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "七獎"
+      ],
+      "formulaCounts": {
+        "七獎": 10
+      },
+      "formulaTotalUnits": 10,
+      "formulaTotalAmount": 400,
+      "bruteTiers": [
+        "七獎"
+      ],
+      "bruteTotalAmount": 400,
+      "checks": [
+        "PASS: 總注數 = 10",
+        "PASS: 獎級集合 = [七獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-10",
+      "cat": "膽拖-四膽(全中)+腳含全正選+特別",
+      "desc": "4 膽[1,2,3,4]全中；3 腳含餘 2 正選 + 特別：頭獎+二獎",
+      "betType": "banker",
+      "numbers": "膽[1,2,3,4] + 腳[5,6,7]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "expectedTotalUnits": 3,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "formulaCounts": {
+        "二獎": 2,
+        "頭獎": 1
+      },
+      "formulaTotalUnits": 3,
+      "formulaTotalAmount": 19000000,
+      "bruteTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "bruteTotalAmount": 19000000,
+      "checks": [
+        "PASS: 總注數 = 3",
+        "PASS: 獎級集合 = [頭獎,二獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-11",
+      "cat": "膽拖-五膽(全中)+腳含全正選+特別",
+      "desc": "5 膽[1,2,3,4,5]全中；2 腳含餘 1 正選 + 特別：頭獎+二獎",
+      "betType": "banker",
+      "numbers": "膽[1,2,3,4,5] + 腳[6,7]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "expectedTotalUnits": 2,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "formulaCounts": {
+        "二獎": 1,
+        "頭獎": 1
+      },
+      "formulaTotalUnits": 2,
+      "formulaTotalAmount": 17500000,
+      "bruteTiers": [
+        "頭獎",
+        "二獎"
+      ],
+      "bruteTotalAmount": 17500000,
+      "checks": [
+        "PASS: 總注數 = 2",
+        "PASS: 獎級集合 = [頭獎,二獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-12",
+      "cat": "膽拖-五膽(全中)+腳無特別",
+      "desc": "5 膽[1,2,3,4,5]全中；1 腳[6]無特別：頭獎",
+      "betType": "banker",
+      "numbers": "膽[1,2,3,4,5] + 腳[6]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎"
+      ],
+      "expectedTotalUnits": 1,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "頭獎"
+      ],
+      "formulaCounts": {
+        "頭獎": 1
+      },
+      "formulaTotalUnits": 1,
+      "formulaTotalAmount": 16000000,
+      "bruteTiers": [
+        "頭獎"
+      ],
+      "bruteTotalAmount": 16000000,
+      "checks": [
+        "PASS: 總注數 = 1",
+        "PASS: 獎級集合 = [頭獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-13",
+      "cat": "膽拖-雙膽(全中)+腳部分中(無特別)",
+      "desc": "2 膽[1,2]；5 腳含 3 正選 + 2 雜、無特別：三獎+五獎",
+      "betType": "banker",
+      "numbers": "膽[1,2] + 腳[3,4,5,8,9]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "三獎",
+        "五獎"
+      ],
+      "expectedTotalUnits": 5,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "三獎",
+        "五獎"
+      ],
+      "formulaCounts": {
+        "三獎": 2,
+        "五獎": 3
+      },
+      "formulaTotalUnits": 5,
+      "formulaTotalAmount": 181920,
+      "bruteTiers": [
+        "三獎",
+        "五獎"
+      ],
+      "bruteTotalAmount": 181920,
+      "checks": [
+        "PASS: 總注數 = 5",
+        "PASS: 獎級集合 = [三獎,五獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-14",
+      "cat": "膽拖-三膽(全中)+腳僅特別",
+      "desc": "3 膽[1,2,3]全中；3 腳[特別,2雜]：六獎",
+      "betType": "banker",
+      "numbers": "膽[1,2,3] + 腳[7,20,21]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "六獎"
+      ],
+      "expectedTotalUnits": 1,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "六獎"
+      ],
+      "formulaCounts": {
+        "六獎": 1
+      },
+      "formulaTotalUnits": 1,
+      "formulaTotalAmount": 320,
+      "bruteTiers": [
+        "六獎"
+      ],
+      "bruteTotalAmount": 320,
+      "checks": [
+        "PASS: 總注數 = 1",
+        "PASS: 獎級集合 = [六獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-15",
+      "cat": "膽拖-三膽(1中2不中)+腳全正選",
+      "desc": "3 膽[1,8,9]；6 腳含 5 正選 + 1 雜：五獎+七獎",
+      "betType": "banker",
+      "numbers": "膽[1,8,9] + 腳[2,3,4,5,6,20]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "五獎",
+        "七獎"
+      ],
+      "expectedTotalUnits": 20,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "五獎",
+        "七獎"
+      ],
+      "formulaCounts": {
+        "五獎": 10,
+        "七獎": 10
+      },
+      "formulaTotalUnits": 20,
+      "formulaTotalAmount": 6800,
+      "bruteTiers": [
+        "五獎",
+        "七獎"
+      ],
+      "bruteTotalAmount": 6800,
+      "checks": [
+        "PASS: 總注數 = 20",
+        "PASS: 獎級集合 = [五獎,七獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "B-16",
+      "cat": "膽拖-五膽(4中1不中)+腳含特別",
+      "desc": "5 膽[1,2,3,4,9]；3 腳[5,6,特別]：三獎+四獎",
+      "betType": "banker",
+      "numbers": "膽[1,2,3,4,9] + 腳[5,6,7]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "三獎",
+        "四獎"
+      ],
+      "expectedTotalUnits": 3,
+      "error": false,
+      "note": "",
+      "formulaTiers": [
+        "三獎",
+        "四獎"
+      ],
+      "formulaCounts": {
+        "四獎": 1,
+        "三獎": 2
+      },
+      "formulaTotalUnits": 3,
+      "formulaTotalAmount": 189600,
+      "bruteTiers": [
+        "三獎",
+        "四獎"
+      ],
+      "bruteTotalAmount": 189600,
+      "checks": [
+        "PASS: 總注數 = 3",
+        "PASS: 獎級集合 = [三獎,四獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "E-01",
+      "cat": "邊界-空注單",
+      "desc": "複式傳入空號碼陣列：系統應回傳錯誤（最少 7 個）",
+      "betType": "multiple",
+      "numbers": "池[]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": null,
+      "error": true,
+      "note": "",
+      "formulaTiers": null,
+      "formulaCounts": null,
+      "formulaTotalUnits": null,
+      "formulaTotalAmount": null,
+      "bruteTiers": null,
+      "bruteTotalAmount": null,
+      "checks": [
+        "PASS: 系統正確回傳錯誤 — 複式投注最少需要選擇 7 個號碼"
+      ],
+      "ok": true
+    },
+    {
+      "id": "E-02",
+      "cat": "邊界-重複號碼",
+      "desc": "複式號碼池含重複 [1,1,...]：系統「未做去重」，重複號被當作不同號，導致中獎注數異常偏高",
+      "betType": "multiple",
+      "numbers": "池[1,1,2,3,4,5,6]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎"
+      ],
+      "expectedTotalUnits": 7,
+      "error": false,
+      "note": "正確行為應先去重為 [1,2,3,4,5,6] → 頭獎×1；系統實際給頭獎×7，揭示缺少去重防護。",
+      "formulaTiers": [
+        "頭獎"
+      ],
+      "formulaCounts": {
+        "頭獎": 7
+      },
+      "formulaTotalUnits": 7,
+      "formulaTotalAmount": 112000000,
+      "bruteTiers": [
+        "頭獎"
+      ],
+      "bruteTotalAmount": 112000000,
+      "checks": [
+        "PASS: 總注數 = 7",
+        "PASS: 獎級集合 = [頭獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "E-03",
+      "cat": "邊界-膽拖號碼重疊",
+      "desc": "膽[1] 與腳[1,2,3,4,5] 重疊：系統未偵測重疊，組合出現重複號",
+      "betType": "banker",
+      "numbers": "膽[1] + 腳[1,2,3,4,5]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎"
+      ],
+      "expectedTotalUnits": 1,
+      "error": false,
+      "note": "系統未警告膽腳重疊；組合 [1,1,2,3,4,5] 含重複 1，仍判頭獎。",
+      "formulaTiers": [
+        "頭獎"
+      ],
+      "formulaCounts": {
+        "頭獎": 1
+      },
+      "formulaTotalUnits": 1,
+      "formulaTotalAmount": 16000000,
+      "bruteTiers": [
+        "頭獎"
+      ],
+      "bruteTotalAmount": 16000000,
+      "checks": [
+        "PASS: 總注數 = 1",
+        "PASS: 獎級集合 = [頭獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "E-04",
+      "cat": "邊界-超出可選範圍",
+      "desc": "複式含 50（>49）：系統未做範圍校驗，靜默當作普通非中獎號",
+      "betType": "multiple",
+      "numbers": "池[1,2,3,4,5,6,50]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎",
+        "三獎"
+      ],
+      "expectedTotalUnits": 7,
+      "error": false,
+      "note": "50 不在 1–49，系統接受並視為未中獎號；正確應先拒絕越界號碼。",
+      "formulaTiers": [
+        "頭獎",
+        "三獎"
+      ],
+      "formulaCounts": {
+        "頭獎": 1,
+        "三獎": 6
+      },
+      "formulaTotalUnits": 7,
+      "formulaTotalAmount": 16540000,
+      "bruteTiers": [
+        "頭獎",
+        "三獎"
+      ],
+      "bruteTotalAmount": 16540000,
+      "checks": [
+        "PASS: 總注數 = 7",
+        "PASS: 獎級集合 = [頭獎,三獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "A-01",
+      "cat": "異常-無效格式(字串混入)",
+      "desc": "複式號碼池混入字串 \"x\"：系統未做型別校驗，字串被當作未中獎號",
+      "betType": "multiple",
+      "numbers": "池[1,2,3,x,5,6,7]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "二獎",
+        "三獎",
+        "四獎"
+      ],
+      "expectedTotalUnits": 7,
+      "error": false,
+      "note": "字串 \"x\" 參與組合但永不中獎；系統未拋錯，揭示缺少型別/格式驗證。",
+      "formulaTiers": [
+        "二獎",
+        "三獎",
+        "四獎"
+      ],
+      "formulaCounts": {
+        "二獎": 1,
+        "四獎": 5,
+        "三獎": 1
+      },
+      "formulaTotalUnits": 7,
+      "formulaTotalAmount": 1638000,
+      "bruteTiers": [
+        "二獎",
+        "三獎",
+        "四獎"
+      ],
+      "bruteTotalAmount": 1638000,
+      "checks": [
+        "PASS: 總注數 = 7",
+        "PASS: 獎級集合 = [二獎,三獎,四獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "A-02",
+      "cat": "異常-缺失必填欄位",
+      "desc": "膽拖模式無膽碼：系統應回傳錯誤（至少 1 個膽）",
+      "betType": "banker",
+      "numbers": "膽[] + 腳[1,2,3,4,5]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": null,
+      "error": true,
+      "note": "",
+      "formulaTiers": null,
+      "formulaCounts": null,
+      "formulaTotalUnits": null,
+      "formulaTotalAmount": null,
+      "bruteTiers": null,
+      "bruteTotalAmount": null,
+      "checks": [
+        "PASS: 系統正確回傳錯誤 — 請至少選擇 1 個膽碼"
+      ],
+      "ok": true
+    },
+    {
+      "id": "A-03",
+      "cat": "異常-膽碼超過限制",
+      "desc": "膽碼 6 個（>UI 上限 5）：UI 會攔截，但資料旁路時系統容許，need=0 視為單注全膽",
+      "betType": "banker",
+      "numbers": "膽[1,2,3,4,5,6] + 腳[7,8]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎"
+      ],
+      "expectedTotalUnits": 1,
+      "error": false,
+      "note": "checkerState 有 CHECKER_MAX_BANKERS=5 防護，但 doCheck 僅依 need 計算，未拒絕 6 膽；本例巧合中頭獎。",
+      "formulaTiers": [
+        "頭獎"
+      ],
+      "formulaCounts": {
+        "頭獎": 1
+      },
+      "formulaTotalUnits": 1,
+      "formulaTotalAmount": 16000000,
+      "bruteTiers": [
+        "頭獎"
+      ],
+      "bruteTotalAmount": 16000000,
+      "checks": [
+        "PASS: 總注數 = 1",
+        "PASS: 獎級集合 = [頭獎]",
+        "PASS: 公式獎級注數 == 暴力列舉（真值一致）",
+        "PASS: 總獎金 == 暴力列舉"
+      ],
+      "ok": true
+    },
+    {
+      "id": "A-04",
+      "cat": "異常-腳碼數量不足",
+      "desc": "膽[1,2,3] 但腳為空：系統應回傳錯誤（需至少 3 腳）",
+      "betType": "banker",
+      "numbers": "膽[1,2,3] + 腳[]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": null,
+      "error": true,
+      "note": "",
+      "formulaTiers": null,
+      "formulaCounts": null,
+      "formulaTotalUnits": null,
+      "formulaTotalAmount": null,
+      "bruteTiers": null,
+      "bruteTotalAmount": null,
+      "checks": [
+        "PASS: 系統正確回傳錯誤 — 腳碼數量不足，尚需最少 3 個腳碼"
+      ],
+      "ok": true
+    },
+    {
+      "id": "A-05",
+      "cat": "異常-獎金資料缺漏",
+      "desc": "開獎資料缺二/三獎金額，但號碼中二/三獎：系統因 amount 為 undefined 而「靜默捨棄」該獎級",
+      "betType": "multiple",
+      "numbers": "池[1,2,3,4,5,6,7]",
+      "draw": "正選[1,2,3,4,5,6] 特別7",
+      "expectedTiers": [
+        "頭獎"
+      ],
+      "expectedTotalUnits": 7,
+      "error": false,
+      "note": "真值應含 二獎×6、三獎×1；因 checkerPrizeAmount 對二/三獎無保底，amount=undefined 被 `if(!amount) continue` 捨棄，僅計頭獎。建議二/三獎亦設保底或報錯。",
+      "formulaTiers": [
+        "頭獎"
+      ],
+      "formulaCounts": {
+        "頭獎": 1
+      },
+      "formulaTotalUnits": 7,
+      "formulaTotalAmount": 16000000,
+      "bruteTiers": null,
+      "bruteTotalAmount": null,
+      "checks": [
+        "PASS: 總注數 = 7",
+        "PASS: 獎級集合 = [頭獎]",
+        "SKIP: 刻意不比對暴力列舉（系統行為觀察案例）"
+      ],
+      "ok": true
+    }
+  ]
+}

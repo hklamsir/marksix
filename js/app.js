@@ -478,20 +478,58 @@ function formatNextDate(dateStr, wd) {
   return `${p[0]}年${parseInt(p[1], 10)}月${parseInt(p[2], 10)}日（${wd || ''}）`;
 }
 
-/** 渲染未來攪珠日程小列表（不含作為標題的下一期） */
+/** 以雙月曆形式渲染未來攪珠日程 */
 function renderNextSchedule(schedule, nextDate) {
   if (!schedule || !schedule.length) return '';
-  const upcoming = schedule
-    .filter(s => s.date > nextDate)
-    .slice(0, 10);
+  const upcoming = schedule.filter(s => s.date > nextDate);
   if (!upcoming.length) return '';
-  const chips = upcoming.map(s =>
-    `<span class="nd-schedule-chip${s.snowball ? ' snowball' : ''}">${s.date}${s.snowball ? ' ❄️' : ''}</span>`
-  ).join('');
+
+  const drawSet = new Set(upcoming.map(s => s.date));
+  const snowSet = new Set(upcoming.filter(s => s.snowball).map(s => s.date));
+
+  // 從下期的月份開始，取兩個月
+  const first = new Date(nextDate + 'T00:00:00+08:00');
+  const months = [];
+  for (let i = 0; i < 2; i++) {
+    const d = new Date(first.getFullYear(), first.getMonth() + i, 1);
+    months.push({ year: d.getFullYear(), month: d.getMonth() + 1 });
+  }
+
+  const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+
+  const calendars = months.map(({ year, month }) => {
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const firstDay = new Date(year, month - 1, 1).getDay();
+
+    let cells = '';
+    for (let i = 0; i < firstDay; i++) {
+      cells += '<div class="nd-cal-cell empty"></div>';
+    }
+    for (let d = 1; d <= daysInMonth; d++) {
+      const ds = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const isDraw = drawSet.has(ds);
+      const isSnow = snowSet.has(ds);
+      let cls = 'nd-cal-cell';
+      if (isDraw) cls += ' draw';
+      if (isSnow) cls += ' snowball';
+      cells += `<div class="${cls}"><span class="nd-cal-num">${d}</span>${isSnow ? '<span class="nd-cal-star">❄️</span>' : ''}</div>`;
+    }
+
+    return `
+      <div class="nd-calendar">
+        <div class="nd-cal-header">${year}年 ${month}月</div>
+        <div class="nd-cal-grid">
+          ${weekDays.map(w => `<div class="nd-cal-day-head">${w}</div>`).join('')}
+          ${cells}
+        </div>
+      </div>
+    `;
+  });
+
   return `
     <div class="nd-schedule">
-      <div class="nd-schedule-title">📆 其後攪珠日程</div>
-      <div class="nd-schedule-list">${chips}</div>
+      <div class="nd-schedule-title">📅 未來攪珠日程</div>
+      <div class="nd-calendars">${calendars.join('')}</div>
     </div>
   `;
 }
@@ -1364,11 +1402,13 @@ function renderSingleCheckResult(draw, mainNumbers, matchMain, matchSpecial, uni
         <div class="result-matched">
           <div class="matched-label">中獎比對詳情</div>
           <div>中 ${matchMain} 個正選號碼${matchSpecial ? ' + 特別號碼' : ''}</div>
-          <div class="ball-row" style="justify-content:center;margin-top:8px;">
-            你的號碼：${renderBalls(sortedMain, null, 'ball-sm')}
+          <div class="ball-row" style="flex-direction:column;align-items:center;margin-top:8px;">
+            <div class="ball-label">你的號碼：</div>
+            <div>${renderBalls(sortedMain, null, 'ball-sm')}</div>
           </div>
-          <div class="ball-row" style="justify-content:center;margin-top:8px;">
-            開獎號碼：${renderBalls(draw.main_numbers, draw.special_number, 'ball-sm')}
+          <div class="ball-row" style="flex-direction:column;align-items:center;margin-top:8px;">
+            <div class="ball-label">開獎號碼：</div>
+            <div>${renderBalls(draw.main_numbers, draw.special_number, 'ball-sm')}</div>
           </div>
         </div>
       </div>`;
@@ -1382,11 +1422,13 @@ function renderSingleCheckResult(draw, mainNumbers, matchMain, matchSpecial, uni
         </p>
         ${specialNote}
         <div class="result-matched">
-          <div class="ball-row" style="justify-content:center;margin-top:8px;">
-            你的號碼：${renderBalls(sortedMain, null, 'ball-sm')}
+          <div class="ball-row" style="flex-direction:column;align-items:center;margin-top:8px;">
+            <div class="ball-label">你的號碼：</div>
+            <div>${renderBalls(sortedMain, null, 'ball-sm')}</div>
           </div>
-          <div class="ball-row" style="justify-content:center;margin-top:8px;">
-            開獎號碼：${renderBalls(draw.main_numbers, draw.special_number, 'ball-sm')}
+          <div class="ball-row" style="flex-direction:column;align-items:center;margin-top:8px;">
+            <div class="ball-label">開獎號碼：</div>
+            <div>${renderBalls(draw.main_numbers, draw.special_number, 'ball-sm')}</div>
           </div>
         </div>
       </div>`;
@@ -1435,8 +1477,17 @@ function renderMultiCheckResult(draw, fullPool, dist, totalUnits, split, unitBet
       rows.push({ tier, count, amount, subtotal });
     }
   } else {
-    // 簡化模式：特別號碼全有或全無（split 不可用時的 fallback）
-    const matchSpecial = split ? false : fullPool.includes(draw.special_number);
+    // 簡化模式：特別號碼命中判斷
+    // - 特別號在膽碼中（split 為 marker）：所有注都含特別 → matchSpecial=true
+    // - 特別號不在用戶號碼池中：全部不含 → matchSpecial=false（= fullPool.includes 結果）
+    let matchSpecial;
+    if (split) {
+      const specialInBanker = checkerState.betType === 'banker' &&
+        checkerState.bankerNumbers.includes(draw.special_number);
+      matchSpecial = specialInBanker;
+    } else {
+      matchSpecial = fullPool.includes(draw.special_number);
+    }
     for (let k = 6; k >= 3; k--) {
       const count = dist[k] || 0;
       if (count <= 0) continue;
@@ -1452,14 +1503,30 @@ function renderMultiCheckResult(draw, fullPool, dist, totalUnits, split, unitBet
   }
 
   const hasSpecial = fullPool.includes(draw.special_number);
-  const specialNote = hasSpecial ? '<div class="matched-label" style="margin-top:8px;">🎯 你的號碼中包含特別號碼 <strong>' + draw.special_number + '</strong>，獎級已相應提升！</div>' : '';
+  const specialNote = hasSpecial ? '<div class="matched-label" style="margin-top:8px;">🎯 你的號碼中包含特別號碼 <strong>' + draw.special_number + '</strong>！</div>' : '';
+
+  // 你的號碼 ball 列：膽拖模式下分開顯示膽碼、腳碼
+  let yourBallsHtml;
+  if (checkerState.betType === 'banker') {
+    const sortedBanker = [...checkerState.bankerNumbers].sort((a, b) => a - b);
+    const sortedLeg = [...checkerState.legNumbers].sort((a, b) => a - b);
+    yourBallsHtml = `
+      <div class="ball-group-label">🔴 膽碼（${checkerState.bankerNumbers.length}）</div>
+      <div class="ball-wrapper">${renderBalls(sortedBanker, null, 'ball-sm') || '<span style="color:var(--text-light);">—</span>'}</div>
+      <div class="ball-group-label" style="margin-top:8px;">⚪ 腳碼（${checkerState.legNumbers.length}）</div>
+      <div class="ball-wrapper">${renderBalls(sortedLeg, null, 'ball-sm') || '<span style="color:var(--text-light);">—</span>'}</div>`;
+  } else {
+    yourBallsHtml = `<div class="ball-wrapper">${renderBalls(sortedPool, null, 'ball-sm')}</div>`;
+  }
 
   const ballsBlock = `
-    <div class="ball-row" style="justify-content:center;margin-top:8px;">
-      你的號碼：${renderBalls(sortedPool, null, 'ball-sm')}
+    <div class="ball-row" style="flex-direction:column;align-items:center;margin-top:8px;">
+      <div class="ball-label">你的號碼：</div>
+      ${yourBallsHtml}
     </div>
-    <div class="ball-row" style="justify-content:center;margin-top:8px;">
-      開獎號碼：${renderBalls(draw.main_numbers, draw.special_number, 'ball-sm')}
+    <div class="ball-row" style="flex-direction:column;align-items:center;margin-top:8px;">
+      <div class="ball-label">開獎號碼：</div>
+      <div class="ball-wrapper">${renderBalls(draw.main_numbers, draw.special_number, 'ball-sm')}</div>
     </div>`;
 
   if (rows.length === 0) {
@@ -1484,7 +1551,7 @@ function renderMultiCheckResult(draw, fullPool, dist, totalUnits, split, unitBet
   resultDiv.innerHTML = `
     <div class="result-display">
       <div class="result-icon">🎉</div>
-      <div class="result-level">恭喜！複式／膽拖中獎！</div>
+      <div class="result-level">恭喜！${checkerState.betType === 'multiple' ? '複式' : '膽拖'}中獎！</div>
       <div class="result-amount">${formatCurrency(totalAmount)}</div>
       <div style="color:var(--text-secondary);font-size:0.9rem;margin-top:4px;">
         共 ${totalWinUnits.toLocaleString()} 注中獎（總投注 ${totalUnits.toLocaleString()} 注，每注 HK$ ${unitBet}）

@@ -171,6 +171,9 @@ a:hover { color: var(--text); }
 
 .ball-plus { font-size: 1.2rem; color: var(--text-secondary); margin: 0 4px; font-weight: 700; }
 .ball-row { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+.ball-label { font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; }
+.ball-wrapper { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+.ball-group-label { font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; }
 
 /* --- Latest Draw --- */
 .latest-draw-card {
@@ -626,17 +629,20 @@ a:hover { color: var(--text); }
 /* 累積多寶彩金（取代原「截售時間」區域） */
 .nd-jackpot {
   margin: 4px 0 18px;
-  padding: 18px 20px;
+  padding: 24px 20px;
   border: 3px solid var(--border);
-  background: var(--accent);
+  background: #faf8f2;
   box-shadow: var(--shadow);
+  text-align: center;
 }
 .nd-jackpot.snowball { background: var(--primary); }
 .nd-jackpot-head {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
 }
 .nd-jackpot-icon { font-size: 1.25rem; line-height: 1; }
 .nd-jackpot-label {
@@ -647,7 +653,6 @@ a:hover { color: var(--text); }
 }
 .nd-jackpot.snowball .nd-jackpot-label { color: var(--accent); }
 .nd-jackpot-badge {
-  margin-left: auto;
   background: var(--accent);
   color: var(--primary);
   border: 2px solid var(--border);
@@ -674,23 +679,72 @@ a:hover { color: var(--text); }
 }
 .nd-jackpot.snowball .nd-jackpot-detail { color: #fff; }
 
-/* 未來日程小列表 */
+/* 未來攪珠雙月曆 */
 .nd-schedule {
   margin-top: 20px;
   border-top: 3px solid var(--border);
   padding-top: 16px;
 }
-.nd-schedule-title { font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
-.nd-schedule-list { display: flex; flex-wrap: wrap; gap: 8px; }
-.nd-schedule-chip {
-  border: 2px solid var(--border);
-  padding: 4px 10px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  background: #fff;
-  color: var(--text);
+.nd-schedule-title { font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+.nd-calendars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
 }
-.nd-schedule-chip.snowball { background: var(--primary); color: var(--accent); }
+.nd-calendar {
+  border: 2px solid var(--border);
+  background: #fff;
+}
+.nd-cal-header {
+  background: var(--primary);
+  color: var(--accent);
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+.nd-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 6px 8px 8px;
+  gap: 2px;
+}
+.nd-cal-day-head {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-light);
+  padding: 4px 0 6px;
+  border-bottom: 1px solid var(--border);
+}
+.nd-cal-cell {
+  text-align: center;
+  padding: 4px 2px;
+  min-height: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  border-radius: 2px;
+}
+.nd-cal-cell.empty { color: transparent; }
+.nd-cal-num { display: block; line-height: 1; }
+.nd-cal-star { font-size: 0.55rem; margin-top: 1px; line-height: 1; }
+.nd-cal-cell.draw {
+  background: var(--accent);
+  border: 2px solid var(--border);
+  font-weight: 800;
+  color: var(--primary);
+}
+.nd-cal-cell.draw.snowball {
+  background: var(--primary);
+  color: var(--accent);
+  border-color: var(--accent);
+}
 
 /* 狀態 / 提示 */
 .nd-status {
@@ -728,6 +782,9 @@ a:hover { color: var(--text); }
   .nd-jackpot-amount { font-size: 1.85rem; }
   .nd-meta-label { font-size: 0.72rem; }
   .nd-meta-value { font-size: 0.98rem; }
+  .nd-calendars { grid-template-columns: 1fr; }
+  .nd-cal-cell { min-height: 30px; font-size: 0.75rem; }
+  .nd-cal-header { font-size: 0.82rem; }
 }
 
 /* 手機版頻率圖表: 增加高度以容納旋轉後的 X 軸標籤 */
