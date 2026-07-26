@@ -74,7 +74,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/draw_results_verified.json data/data.js
+          git add data/draw_results_verified.json data/data.js data/next_draw.json
           git commit -m "📊 自動更新六合彩開獎資料 — $(date '+%Y-%m-%d %H:%M HKT')"
           git push
         env:

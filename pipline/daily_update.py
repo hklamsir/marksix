@@ -6,7 +6,7 @@ daily_update.py
 GitHub Actions 每日自動更新腳本 — 從 HKJC 官方 GraphQL 抓取最新六合彩開獎資料，
 合併至 draw_results_verified.json 並重新生成 data/data.js。
 
-排程：每日 23:00 HKT（由 GitHub Actions cron 控制）
+排程：每日 21:45 與 22:30 HKT（雙時段，由 GitHub Actions cron 控制）
 設計原則：
   - 僅抓取近 30 天資料（六合彩每週約 2-3 期，30 天足夠覆蓋）
   - 以 draw_no 去重，安全冪等（重複執行不會產生重複資料）
