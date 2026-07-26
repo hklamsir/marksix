@@ -47,7 +47,9 @@ fetch_next_draw.py
 import argparse
 import json
 import os
+import re
 import ssl
+import subprocess
 import sys
 import urllib.request
 from datetime import date, datetime
@@ -107,6 +109,57 @@ def log(msg: str) -> None:
 
 def get_day_of_week(d: date) -> str:
     return WEEKDAY_MAP[d.weekday()]
+
+
+# ---------------------------------------------------------------------------
+# 從 HKJC 官網擷取「多寶 / 金多寶」確切金額（使用 headless browser）
+# ---------------------------------------------------------------------------
+_JACKPOT_RE = re.compile(
+    r"多寶\s*/\s*金多寶\".*?\n.*?LayoutTableCell.*?\$([\d,]+)\"",
+    re.MULTILINE,
+)
+_AGENT_BROWSER = "agent-browser"
+
+
+def scrape_jackpot_from_hkjc(timeout: int = 90) -> int | None:
+    """從 bet.hkjc.com/ch/marksix/home 擷取官網顯示的「多寶 / 金多寶」金額。"""
+    def run(*args: str) -> subprocess.CompletedProcess:
+        cmd = " ".join([_AGENT_BROWSER] + list(args))
+        return subprocess.run(
+            cmd, shell=True, capture_output=True, text=True,
+            timeout=timeout, check=False,
+        )
+
+    try:
+        r = run("open", "https://bet.hkjc.com/ch/marksix/home")
+        if r.returncode != 0:
+            log(f"  ⚠ agent-browser open 失敗 (rc={r.returncode}): {(r.stderr or '')[:200]}")
+            return None
+
+        run("wait", "--load", "load")
+        r = run("snapshot")
+        text = (r.stdout or "") + (r.stderr or "")
+        run("close")
+
+        m = _JACKPOT_RE.search(text)
+        if m:
+            amount_str = m.group(1).replace(",", "")
+            try:
+                amount = int(amount_str)
+                log(f"  ✓ 擷取多寶彩金: HK$ {amount:,}")
+                return amount
+            except ValueError:
+                pass
+        log("  ⚠ 未在頁面中找到多寶 / 金多寶金額")
+        return None
+
+    except subprocess.TimeoutExpired:
+        log("  ⚠ agent-browser 超時")
+    except FileNotFoundError:
+        log("  ⚠ 找不到 agent-browser（請先 npm install -g agent-browser && agent-browser install）")
+    except Exception as e:
+        log(f"  ⚠ 擷取多寶彩金時出錯: {e}")
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -368,6 +421,16 @@ def main() -> None:
     log(f"下期攪珠: 第 {next_draw['draw_no']} 期, {next_draw['draw_date']} "
         f"({next_draw['day_of_week']})"
         f"{' [金多寶]' if next_draw['is_snowball'] else ''}")
+
+    # Step 4: 從 HKJC 官網擷取精確的多寶 / 金多寶金額（覆蓋估算值）
+    try:
+        scraped = scrape_jackpot_from_hkjc()
+        if scraped is not None:
+            next_draw["jackpot_rollover"] = scraped
+            next_draw["jackpot_is_rollover"] = (scraped > 0)
+            log(f"  → 多寶彩金覆蓋為官網擷取值: HK$ {scraped:,}")
+    except Exception:
+        log("  → 擷取失敗，沿用估算值")
 
     # 保留完整日程（含過去），供前端即時重算下期攪珠使用
     # （檔案體積極小，且可避免因只存未來日程而導致跨月/跨年重算失效）
