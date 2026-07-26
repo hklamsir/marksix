@@ -401,6 +401,8 @@ function initLatestSubTabs() {
       });
       panelLatest.style.display = (sub === 'latest') ? '' : 'none';
       panelNext.style.display = (sub === 'next') ? '' : 'none';
+      // 切換分頁後平滑捲回頁頂，避免畫面停留在底部造成體驗不佳
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
 }
