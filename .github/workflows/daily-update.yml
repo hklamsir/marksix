@@ -3,9 +3,9 @@ name: 每日自動更新六合彩資料
 on:
   schedule:
     # 每日 21:45 HKT = 13:45 UTC
-    - cron: "47 13 * * *"
+    - cron: "17 13 * * *"
     # 每日 22:30 HKT = 14:30 UTC
-    - cron: "23 14 * * *"
+    - cron: "54 13 * * *"
   # 允許手動觸發（方便測試）
   workflow_dispatch:
 
