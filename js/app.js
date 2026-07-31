@@ -571,10 +571,10 @@ function jackpotDetailHtml(nd) {
   const g = Number(nd.jackpot_guarantee) || 0;
   if (roll > 0) {
     const m = (roll / 1e6).toFixed(1).replace(/\.0$/, '');
-    return '上期頭獎無人中獎，未派發頭獎彩金（約 HK$ ' + m + 'M）已全數滾存至本期「多寶彩池」，連同本期新投注一併攪出。';
+    return '上期有未派發獎金（約 HK$ ' + m + 'M）已全數滾存至本期「多寶彩池」，連同本期新投注一併攪出。';
   }
   if (isRoll) {
-    return '上期頭獎無人中獎，未派發頭獎彩金已全數滾存至本期「多寶彩池」。（實際金額以香港賽馬會公佈為準。）';
+    return '上期有未派發獎金已全數滾存至本期「多寶彩池」。（實際金額以香港賽馬會公佈為準。）';
   }
   if (nd.is_snowball) {
     return '金多寶攪珠 — 頭獎保證派彩不少於 ' + fmtMoney(g) + '，實際彩金以攪珠當日公佈為準。';
