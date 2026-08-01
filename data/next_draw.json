@@ -1,9 +1,9 @@
 {
   "meta": {
-    "generated": "2026-07-30T23:24:25",
+    "generated": "2026-08-01T22:18:33",
     "source": "hkjc_sitecore_schedule + local_verified",
-    "latest_draw_no": "26/082",
-    "latest_draw_date": "2026-07-30",
+    "latest_draw_no": "26/083",
+    "latest_draw_date": "2026-08-01",
     "schedule_years": [
       "2025",
       "2026"
@@ -548,16 +548,16 @@
     }
   ],
   "next_draw": {
-    "draw_no": "26/083",
-    "draw_date": "2026-08-01",
-    "day_of_week": "六",
+    "draw_no": "26/084",
+    "draw_date": "2026-08-04",
+    "day_of_week": "二",
     "is_snowball": false,
     "snowball_name": null,
     "sales_close": "21:15",
     "draw_time": "21:30",
     "estimated_jackpot": null,
-    "jackpot_rollover": 2123979,
-    "jackpot_guarantee": 25000000,
+    "jackpot_rollover": 8000000,
+    "jackpot_guarantee": 8000000,
     "jackpot_is_rollover": true,
     "status": "ok"
   }
