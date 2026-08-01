@@ -547,7 +547,7 @@ a:hover { color: var(--text); }
 .subtab.active { background: var(--primary); color: var(--accent); }
 .subtab-icon { margin-right: 6px; }
 
-.subtab-panel { animation: fadeIn 0.2s ease; }
+.subtab-panel { animation: fadeIn 0.25s ease both; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
 /* --- 下期攪珠卡片 --- */

@@ -378,6 +378,9 @@ function renderLatest() {
 
   // 渲染「下期攪珠」分頁（資料來源：內嵌 window.NEXT_DRAW_DATA）
   renderNextDraw();
+
+  // 依最新開獎結果時間自動切換預設子分頁（≤18h 顯示最新結果，逾時顯示下期攪珠）
+  applyDefaultSubTab();
 }
 
 // ==================== 下期攪珠（子分頁） ====================
@@ -394,17 +397,34 @@ function initLatestSubTabs() {
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const sub = tab.dataset.sub;
-      tabs.forEach(t => {
-        const on = (t === tab);
-        t.classList.toggle('active', on);
-        t.setAttribute('aria-selected', on ? 'true' : 'false');
-      });
-      panelLatest.style.display = (sub === 'latest') ? '' : 'none';
-      panelNext.style.display = (sub === 'next') ? '' : 'none';
+      setActiveSubTab(sub);
       // 切換分頁後平滑捲回頁頂，避免畫面停留在底部造成體驗不佳
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
+}
+
+/** 統一設定「最新結果」子分頁的顯示狀態（手動點擊與自動切換共用） */
+function setActiveSubTab(sub) {
+  const tabs = document.querySelectorAll('#latestSubTabs .subtab');
+  const panelLatest = document.getElementById('panel-latest');
+  const panelNext = document.getElementById('panel-next');
+  if (!tabs.length || !panelLatest || !panelNext) return;
+  tabs.forEach(t => {
+    const on = (t.dataset.sub === sub);
+    t.classList.toggle('active', on);
+    t.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  panelLatest.style.display = (sub === 'latest') ? '' : 'none';
+  panelNext.style.display = (sub === 'next') ? '' : 'none';
+}
+
+/** 依最新開獎結果時間自動決定首頁預設子分頁（方案 B：每次回到首頁都重算） */
+function applyDefaultSubTab() {
+  const draw = Store.latestDraw;
+  if (!draw || !draw.date) return;          // 容錯：無日期時維持預設（最新開獎結果）
+  const showNext = shouldAutoShowNext(draw.date, new Date());
+  setActiveSubTab(showNext ? 'next' : 'latest');
 }
 
 /** 渲染下期攪珠卡片（資料來源：window.NEXT_DRAW_DATA，由 pipline 離線內嵌） */
@@ -690,6 +710,11 @@ async function refreshNextDrawLive() {
     data.meta = data.meta || {};
     data.meta.latest_draw_no = drawNo;
     data.meta.latest_draw_date = dd;
+    // 同步最新結果日期，使 18h 自動切分頁判斷以真實最新開獎為準
+    Store.latestDraw = Store.latestDraw
+      ? { ...Store.latestDraw, date: dd, draw_no: drawNo }
+      : { date: dd, draw_no: drawNo };
+    applyDefaultSubTab();
     renderNextDraw(true);
   } catch (e) {
     // 靜默失敗：維持內嵌資料
