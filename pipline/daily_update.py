@@ -12,7 +12,11 @@ GitHub Actions 每日自動更新腳本 — 從 HKJC 官方 GraphQL 抓取最新
   - 以 draw_no 去重，安全冪等（重複執行不會產生重複資料）
   - 僅更新 draw_results_verified.json（49 號碼時代 2002+）；
     draw_results_1976_2002.json 為歷史靜態資料，無需更新
-  - 若無新資料則跳過後續步驟，避免無意義 commit
+  - 下期攪珠日程（next_draw.json）每日必定重新抓取，與「有無新開獎」
+    解耦：避免原設計「只在新增期數時才刷新」導致日曆資料停滯在舊月份
+    （如賽馬會已發佈 9 月攪珠日卻遲遲不顯示）
+  - 若無新開獎資料則仍刷新日程並重建 data.js，避免無意義 commit 僅指
+    開獎結果本身；日程更新視為有意義變更
   - 失敗時回傳非零 exit code，觸發 GitHub Actions 失敗通知
 
 用法：
@@ -413,8 +417,32 @@ def main() -> None:
     existing = load_existing_draws()
     merged, new_count = merge_draws(existing, new_draws)
 
+    # ---- 每日刷新下期攪珠日程（與開獎結果更新解耦）----
+    # 即便本輪沒有新開獎結果，也要每天重新抓取賽馬會攪珠日程表並
+    # 重新寫入 next_draw.json，確保官方一發佈新月份（如 9 月）即自動更新，
+    # 避免原設計「只在有新增期數時才刷新」而導致日曆資料停滯在舊月份。
+    log("Step 4/5: 重新計算下期攪珠資料（每日刷新，不受開獎結果影響）...")
+    if args.dry_run:
+        log("[DRY-RUN] 跳過下期攪珠資料重新計算")
+    else:
+        try:
+            import importlib.util
+            spec = importlib.util.spec_from_file_location(
+                "fetch_next_draw", SCRIPT_DIR / "fetch_next_draw.py")
+            fnd = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(fnd)
+            fnd.main()
+        except Exception as e:  # noqa: BLE001
+            log(f"  ⚠ 下期攪珠資料重新計算失敗（不影響主流程）: {e}")
+
     if new_count == 0:
-        log(f"  無新增期數（現有 {len(existing['draws'])} 期已是最新），結束執行")
+        log(f"  無新增期數（現有 {len(existing['draws'])} 期已是最新），"
+            f"但仍已刷新下期攪珠日程")
+        if args.dry_run:
+            sys.exit(0)
+        # 重新內嵌最新 next_draw 資料（即使開獎資料無變動，日程已更新）
+        log("Step 5/5: 重新生成 data/data.js（內嵌最新日程）...")
+        rebuild_data_js()
         sys.exit(0)
 
     log(f"  新增 {new_count} 期 → 合計 {len(merged)} 期")
@@ -425,16 +453,6 @@ def main() -> None:
 
     # Step 4: 寫入 JSON 並重建 data.js
     save_draws_json(existing, merged)
-    log("Step 4/5: 重新計算下期攪珠資料...")
-    try:
-        import importlib.util
-        spec = importlib.util.spec_from_file_location(
-            "fetch_next_draw", SCRIPT_DIR / "fetch_next_draw.py")
-        fnd = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(fnd)
-        fnd.main()
-    except Exception as e:  # noqa: BLE001
-        log(f"  ⚠ 下期攪珠資料重新計算失敗（不影響主流程）: {e}")
     log("Step 5/5: 重新生成 data/data.js...")
     rebuild_data_js()
 
