@@ -1,9 +1,9 @@
 {
   "meta": {
-    "generated": "2026-08-09T20:29:00",
+    "generated": "2026-08-09T21:34:36",
     "source": "hkjc_sitecore_schedule + local_verified",
-    "latest_draw_no": "26/085",
-    "latest_draw_date": "2026-08-06",
+    "latest_draw_no": "26/086",
+    "latest_draw_date": "2026-08-08",
     "schedule_years": [
       "2025",
       "2026"
@@ -548,9 +548,9 @@
     }
   ],
   "next_draw": {
-    "draw_no": "26/086",
-    "draw_date": "2026-08-08",
-    "day_of_week": "六",
+    "draw_no": "26/087",
+    "draw_date": "2026-08-11",
+    "day_of_week": "二",
     "is_snowball": false,
     "snowball_name": null,
     "sales_close": "21:15",
