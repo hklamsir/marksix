@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-08-16T21:17:22",
+    "generated": "2026-08-17T20:22:57",
     "source": "hkjc_sitecore_schedule + local_verified",
     "latest_draw_no": "26/089",
     "latest_draw_date": "2026-08-15",
@@ -544,6 +544,54 @@
     },
     {
       "date": "2026-08-29",
+      "snowball": false
+    },
+    {
+      "date": "2026-09-01",
+      "snowball": false
+    },
+    {
+      "date": "2026-09-03",
+      "snowball": false
+    },
+    {
+      "date": "2026-09-05",
+      "snowball": false
+    },
+    {
+      "date": "2026-09-08",
+      "snowball": false
+    },
+    {
+      "date": "2026-09-10",
+      "snowball": false
+    },
+    {
+      "date": "2026-09-12",
+      "snowball": false
+    },
+    {
+      "date": "2026-09-15",
+      "snowball": false
+    },
+    {
+      "date": "2026-09-17",
+      "snowball": false
+    },
+    {
+      "date": "2026-09-19",
+      "snowball": false
+    },
+    {
+      "date": "2026-09-22",
+      "snowball": false
+    },
+    {
+      "date": "2026-09-26",
+      "snowball": true
+    },
+    {
+      "date": "2026-09-29",
       "snowball": false
     }
   ],
