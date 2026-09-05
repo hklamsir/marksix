@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-09-05T00:35:47",
+    "generated": "2026-09-05T22:13:17",
     "source": "hkjc_sitecore_schedule + local_verified",
     "latest_draw_no": "26/095",
     "latest_draw_date": "2026-08-29",
@@ -596,9 +596,9 @@
     "sales_close": "21:15",
     "draw_time": "21:30",
     "estimated_jackpot": null,
-    "jackpot_rollover": 185000000,
+    "jackpot_rollover": 0,
     "jackpot_guarantee": 32000000,
-    "jackpot_is_rollover": true,
+    "jackpot_is_rollover": false,
     "status": "ok"
   }
 }
