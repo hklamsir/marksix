@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-09-18T01:15:26",
+    "generated": "2026-09-18T23:26:43",
     "source": "hkjc_sitecore_schedule + local_verified",
     "latest_draw_no": "26/101",
     "latest_draw_date": "2026-09-17",
@@ -10,90 +10,6 @@
     ]
   },
   "schedule": [
-    {
-      "date": "2025-09-02",
-      "snowball": false
-    },
-    {
-      "date": "2025-09-06",
-      "snowball": true
-    },
-    {
-      "date": "2025-09-09",
-      "snowball": false
-    },
-    {
-      "date": "2025-09-11",
-      "snowball": false
-    },
-    {
-      "date": "2025-09-13",
-      "snowball": false
-    },
-    {
-      "date": "2025-09-16",
-      "snowball": false
-    },
-    {
-      "date": "2025-09-18",
-      "snowball": false
-    },
-    {
-      "date": "2025-09-20",
-      "snowball": false
-    },
-    {
-      "date": "2025-09-25",
-      "snowball": false
-    },
-    {
-      "date": "2025-09-27",
-      "snowball": false
-    },
-    {
-      "date": "2025-09-30",
-      "snowball": false
-    },
-    {
-      "date": "2025-10-06",
-      "snowball": true
-    },
-    {
-      "date": "2025-10-09",
-      "snowball": false
-    },
-    {
-      "date": "2025-10-11",
-      "snowball": false
-    },
-    {
-      "date": "2025-10-14",
-      "snowball": false
-    },
-    {
-      "date": "2025-10-16",
-      "snowball": false
-    },
-    {
-      "date": "2025-10-18",
-      "snowball": false
-    },
-    {
-      "date": "2025-10-21",
-      "snowball": false
-    },
-    {
-      "date": "2025-10-23",
-      "snowball": false
-    },
-    {
-      "date": "2025-10-25",
-      "snowball": false
-    },
-    {
-      "date": "2025-10-28",
-      "snowball": false
-    },
     {
       "date": "2025-11-04",
       "snowball": true
@@ -585,6 +501,54 @@
     {
       "date": "2026-09-29",
       "snowball": false
+    },
+    {
+      "date": "2026-10-03",
+      "snowball": false
+    },
+    {
+      "date": "2026-10-06",
+      "snowball": false
+    },
+    {
+      "date": "2026-10-08",
+      "snowball": false
+    },
+    {
+      "date": "2026-10-10",
+      "snowball": false
+    },
+    {
+      "date": "2026-10-13",
+      "snowball": false
+    },
+    {
+      "date": "2026-10-15",
+      "snowball": false
+    },
+    {
+      "date": "2026-10-17",
+      "snowball": false
+    },
+    {
+      "date": "2026-10-20",
+      "snowball": false
+    },
+    {
+      "date": "2026-10-22",
+      "snowball": false
+    },
+    {
+      "date": "2026-10-24",
+      "snowball": false
+    },
+    {
+      "date": "2026-10-27",
+      "snowball": false
+    },
+    {
+      "date": "2026-10-31",
+      "snowball": true
     }
   ],
   "next_draw": {
