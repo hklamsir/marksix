@@ -1,7 +1,7 @@
 {
  "meta": {
-  "updated": "2026-09-22T23:57:07+08:00",
-  "total_draws": 3380,
+  "updated": "2026-09-26T23:22:00+08:00",
+  "total_draws": 3381,
   "latest_draw": "02/053",
   "era": "49號碼時代",
   "year_range": "2002-2026",
@@ -12,6 +12,58 @@
   "prizes_coverage": "3354/3354 期含派彩"
  },
  "draws": [
+  {
+   "draw_no": "26/104",
+   "date": "2026-09-26",
+   "day_of_week": "六",
+   "main_numbers": [
+    4,
+    28,
+    31,
+    44,
+    47,
+    48
+   ],
+   "special_number": 19,
+   "is_snowball": true,
+   "prizes": {
+    "頭獎": {
+     "amount": 0,
+     "winners": 0
+    },
+    "二獎": {
+     "amount": 642080,
+     "winners": 125
+    },
+    "三獎": {
+     "amount": 63320,
+     "winners": 3380
+    },
+    "四獎": {
+     "amount": 9600,
+     "winners": 7910
+    },
+    "五獎": {
+     "amount": 640,
+     "winners": 173190
+    },
+    "六獎": {
+     "amount": 320,
+     "winners": 226960
+    },
+    "七獎": {
+     "amount": 40,
+     "winners": 3115546
+    },
+    "_pool": {
+     "status": "Payout",
+     "total_investment": 210283391,
+     "jackpot": 50000000,
+     "unit_bet": 10,
+     "derived_first_prize_div": 68000000
+    }
+   }
+  },
   {
    "draw_no": "26/103",
    "date": "2026-09-22",
