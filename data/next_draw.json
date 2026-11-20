@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-11-20T04:56:55",
+    "generated": "2026-11-21T03:25:01",
     "source": "hkjc_sitecore_schedule + local_verified",
     "latest_draw_no": "26/123",
     "latest_draw_date": "2026-11-19",
@@ -10,78 +10,6 @@
     ]
   },
   "schedule": [
-    {
-      "date": "2025-11-04",
-      "snowball": true
-    },
-    {
-      "date": "2025-11-06",
-      "snowball": false
-    },
-    {
-      "date": "2025-11-08",
-      "snowball": false
-    },
-    {
-      "date": "2025-11-11",
-      "snowball": false
-    },
-    {
-      "date": "2025-11-13",
-      "snowball": false
-    },
-    {
-      "date": "2025-11-16",
-      "snowball": false
-    },
-    {
-      "date": "2025-11-18",
-      "snowball": false
-    },
-    {
-      "date": "2025-11-20",
-      "snowball": false
-    },
-    {
-      "date": "2025-11-25",
-      "snowball": true
-    },
-    {
-      "date": "2025-12-02",
-      "snowball": false
-    },
-    {
-      "date": "2025-12-06",
-      "snowball": false
-    },
-    {
-      "date": "2025-12-11",
-      "snowball": false
-    },
-    {
-      "date": "2025-12-13",
-      "snowball": false
-    },
-    {
-      "date": "2025-12-16",
-      "snowball": false
-    },
-    {
-      "date": "2025-12-18",
-      "snowball": false
-    },
-    {
-      "date": "2025-12-21",
-      "snowball": false
-    },
-    {
-      "date": "2025-12-25",
-      "snowball": false
-    },
-    {
-      "date": "2025-12-28",
-      "snowball": false
-    },
     {
       "date": "2026-01-03",
       "snowball": true
@@ -584,6 +512,54 @@
     },
     {
       "date": "2026-11-28",
+      "snowball": false
+    },
+    {
+      "date": "2026-12-01",
+      "snowball": false
+    },
+    {
+      "date": "2026-12-03",
+      "snowball": false
+    },
+    {
+      "date": "2026-12-05",
+      "snowball": false
+    },
+    {
+      "date": "2026-12-08",
+      "snowball": false
+    },
+    {
+      "date": "2026-12-10",
+      "snowball": false
+    },
+    {
+      "date": "2026-12-12",
+      "snowball": false
+    },
+    {
+      "date": "2026-12-15",
+      "snowball": false
+    },
+    {
+      "date": "2026-12-17",
+      "snowball": false
+    },
+    {
+      "date": "2026-12-19",
+      "snowball": false
+    },
+    {
+      "date": "2026-12-22",
+      "snowball": false
+    },
+    {
+      "date": "2026-12-24",
+      "snowball": false
+    },
+    {
+      "date": "2026-12-27",
       "snowball": false
     }
   ],
